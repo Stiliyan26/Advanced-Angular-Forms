@@ -1,77 +1,112 @@
-<form
-  #form="ngForm"
-  class="form"
-  (ngSubmit)="onSubmitForm(form, $event)">
-
+<form class="form" #form="ngForm" (ngSubmit)="onSubmitForm(form, $event)">
   <div class="form-field">
     <label for="name">First Name</label>
+
     <input
       [(ngModel)]="userInfo.firstName"
       required
       minlength="2"
+      #firstName="ngModel"
       name="first-name"
       type="text"
       id="name"
       placeholder="Enter your name">
+    <div *ngIf="firstName.dirty && firstName.hasError('required')"
+      class="input-error">This field is required</div>
+    <div *ngIf="firstName.dirty && firstName.hasError('minlength')"
+      class="input-error">This field is too short</div>
   </div>
 
   <div class="form-field">
     <label for="last-name">Last Name</label>
+
     <input
       [(ngModel)]="userInfo.lastName"
       required
       minlength="2"
+      #lastName="ngModel"
       name="last-name"
       type="text"
       id="last-name"
       placeholder="Enter your last name">
+    <div *ngIf="lastName.dirty && lastName.hasError('required')"
+      class="input-error">This field is required</div>
+    <div *ngIf="lastName.dirty && lastName.hasError('minlength')"
+      class="input-error">This field is too short</div>
   </div>
-
+  
   <div class="form-field">
-    <label for="nick-name">Nick Name</label>
+    <label for="nickname">Nickname</label>
+
     <input
       [(ngModel)]="userInfo.nickname"
+      required
       minlength="3"
       pattern="^[\w.]+$"
       name="nickname"
+      #nickname="ngModel"
       type="text"
-      id="nick-name"
-      placeholder="Come up with a nick name">
+      id="nickname"
+      placeholder="Come up with a nickname">
+
+    <div *ngIf="nickname.dirty && nickname.hasError('required')"
+      class="input-error">This field is required</div>
+
+    <div *ngIf="nickname.dirty && nickname.hasError('minlength')"
+      class="input-error">This field is too short</div>
+
+    <div *ngIf="nickname.dirty && nickname.hasError('pattern')"
+      class="input-error">Only letters, numbers, _ and . is allowed</div>
   </div>
 
   <div class="form-field">
     <label for="email">Email</label>
+
     <input
       [(ngModel)]="userInfo.email"
       email
+      required
+      #email="ngModel"
       name="email"
       type="email"
       id="email"
       placeholder="Provide your email">
+
+    <div *ngIf="email.dirty && email.hasError('required')"
+      class="input-error">This field is required</div>
+
+    <div *ngIf="email.dirty && email.hasError('email')" class="input-error">This
+      field should be a valid email</div>
   </div>
 
   <div class="form-field-inline-group">
     <div class="form-field form-field--small">
       <label for="year-of-birth">Year of birth</label>
-      <select
-        required
-        id="year-of-birth"
-        [(ngModel)]="userInfo.yearOfBirth"
-        name="year-of-birth">
+
+      <select #yearOfBirth="ngModel" required id="year-of-birth"
+        [(ngModel)]="userInfo.yearOfBirth" name="year-of-birth">
 
         <option *ngFor="let year of years" [value]="year">{{year}}</option>
       </select>
+
+      <div *ngIf="yearOfBirth.dirty && yearOfBirth.hasError('required')"
+        class="input-error">This field is required</div>
     </div>
 
     <div class="form-field form-field--small">
       <label for="passport">Passport Number</label>
+
       <input
         [(ngModel)]="userInfo.passport"
         pattern="^[A-Z]{2}[0-9]{6}$"
+        #passport="ngModel"
         name="passport"
         type="text"
         id="passport"
         placeholder="Provide Passport Data">
+
+      <div *ngIf="passport.dirty && passport.hasError('pattern')"
+        class="input-error">Invalid passport number</div>
     </div>
   </div>
 
@@ -80,38 +115,52 @@
 
     <div class="form-field">
       <label for="full-address">Full Adress</label>
+
       <input
         [(ngModel)]="userInfo.fullAddress"
         required
+        #fullAdress="ngModel"
         name="full-address"
-        type="text"
         type="text"
         id="full-address"
         placeholder="Street name and house number">
+
+      <div *ngIf="fullAdress.dirty && fullAdress.hasError('required')"
+        class="input-error">This field is required</div>
     </div>
 
     <div class="form-field">
       <label for="city">City</label>
+
       <input
         [(ngModel)]="userInfo.city"
         required
+        #city="ngModel"
         name="city"
         type="text"
         id="city"
         placeholder="City">
+
+      <div *ngIf="city.dirty && city.hasError('required')"
+        class="input-error">This field is required</div>
     </div>
 
     <div class="form-field">
       <label for="post-code">Post Code</label>
+      
       <input
         [(ngModel)]="userInfo.postCode"
         required
+        #postCode="ngModel"
         name="post-code"
         type="number"
         id="post-code"
         placeholder="Post code">
-    </div>
-  </fieldset>
 
+      <div *ngIf="postCode.dirty && postCode.hasError('required')"
+        class="input-error">This field is required</div>
+    </div>
+
+  </fieldset>
   <button [disabled]="form.invalid">Save</button>
 </form>
