@@ -1,4 +1,4 @@
-<form class="form" [ngFormOptions]="{ updateOn: 'change' }">
+<form class="form" [ngFormOptions]="{ updateOn: 'blur' }">
   <p>Form model state</p>
   <pre>{{userInfo | json}}</pre>
 
@@ -6,7 +6,7 @@
     <label for="name">First Name</label>
     <input
       [(ngModel)]="userInfo.firstName"
-      [ngModelOptions]="{ name: 'first-name' }"
+      [ngModelOptions]="{ name: 'first-name', updateOn: 'change' }"
       type="text"
       id="name"
       placeholder="Enter your name">

@@ -8,6 +8,7 @@
   padding: 5px 15px;
   box-sizing: border-box;
   align-items: center;
+  justify-content: space-between;
 }
 .logo {
   margin-right: 25px;
@@ -24,4 +25,12 @@
   &.active {
     border: 1px solid white;
   }
+}
+
+.nav {
+  display: flex;
+}
+
+.global-search {
+  max-width: 350px;
 }
