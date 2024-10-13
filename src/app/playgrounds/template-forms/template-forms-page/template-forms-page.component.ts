@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UserInfo } from '../../../core/models/user-info';
+import { BanWordsDirective } from '../validators/ban-words.directive';
 
 @Component({
   selector: 'app-template-forms-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, BanWordsDirective],
   templateUrl: './template-forms-page.component.html',
   styleUrls: [
     '../../common-page.scss',

@@ -6,15 +6,25 @@
       [(ngModel)]="userInfo.firstName"
       required
       minlength="2"
+      appBanWords="test"
       #firstName="ngModel"
       name="first-name"
       type="text"
       id="name"
       placeholder="Enter your name">
+
     <div *ngIf="firstName.dirty && firstName.hasError('required')"
-      class="input-error">This field is required</div>
+      class="input-error">The field is required</div>
+
     <div *ngIf="firstName.dirty && firstName.hasError('minlength')"
-      class="input-error">This field is too short</div>
+      class="input-error">The length should be at least
+      <strong>{{firstName.getError('minlength').requiredLength}}</strong>
+      characters
+    </div>
+
+    <div *ngIf="firstName.dirty && firstName.hasError('appBanWords')" class="input-error">
+      The value <strong>{{firstName.getError('appBanWords').bannedWord}}</strong> is not allowed
+    </div>
   </div>
 
   <div class="form-field">
@@ -29,12 +39,18 @@
       type="text"
       id="last-name"
       placeholder="Enter your last name">
+
     <div *ngIf="lastName.dirty && lastName.hasError('required')"
       class="input-error">This field is required</div>
+
     <div *ngIf="lastName.dirty && lastName.hasError('minlength')"
-      class="input-error">This field is too short</div>
+      class="input-error">
+      The length should be at least
+      <strong>{{lastName.getError('minlength').requiredLength}}</strong>
+      characters
+    </div>
   </div>
-  
+
   <div class="form-field">
     <label for="nickname">Nickname</label>
 
@@ -147,7 +163,7 @@
 
     <div class="form-field">
       <label for="post-code">Post Code</label>
-      
+
       <input
         [(ngModel)]="userInfo.postCode"
         required
