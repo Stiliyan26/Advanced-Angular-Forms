@@ -188,7 +188,54 @@
       <div *ngIf="postCode.dirty && postCode.hasError('required')"
         class="input-error">This field is required</div>
     </div>
-
   </fieldset>
+
+  <fieldset ngModelGroup="password" appPasswordShouldMatch #passwordGroup="ngModelGroup">
+    <legend>User Password</legend>
+
+    <div class="form-field">
+      <label for="password">Password</label>
+      
+      <input
+        [(ngModel)]="userInfo.password"
+        required
+        minlength="6"
+        #password="ngModel"
+        name="password"
+        type="password"
+        id="password"
+        placeholder="Enter user's password">
+
+      <div *ngIf="password.dirty && password.hasError('required')" class="input-error">
+        This field is required
+      </div>
+
+      <div *ngIf="password.dirty && password.hasError('minlength')" class="input-error">
+        Password length should be at least
+        <strong>{{password.getError('minlength').requiredLength}}</strong>
+        characters
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label for="confirm-password">Confirm password</label>
+
+      <input
+        [(ngModel)]="userInfo.confirmPassword"
+        #confirmPassword="ngModel"
+        name="confirm-password"
+        type="password"
+        id="confirm-password"
+        placeholder="Confirm the password">
+
+      <div
+        *ngIf="confirmPassword.dirty && confirmPassword.hasError('appPasswordShouldMatch')"
+        class="input-error">Password doesn't match
+      </div>
+
+      <p>{{ confirmPassword.hasError('appPasswordShouldMatch') | json}}</p>
+    </div>
+  </fieldset>
+
   <button [disabled]="form.invalid">Save</button>
 </form>

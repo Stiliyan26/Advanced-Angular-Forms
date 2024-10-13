@@ -89,11 +89,11 @@ select {
 }
 
 .ng-valid.ng-dirty:not([ngModelGroup]):not(form) {
-  border: 1px solid var(--color-success);
+  border: 2px solid var(--color-success);
 }
 
-.ng-invalid.ng-dirty:not([ngModelGroup]):not(form) {
-  border: 1px solid var(--color-error);
+.ng-invalid.ng-dirty:not([ngModelGroup="address"]):not(form) {
+  border: 2px solid var(--color-error);
 }
 
 button[disabled] {

@@ -27,7 +27,9 @@ export class BanWordsDirective implements Validator {
 
   validate(control: AbstractControl<string>): ValidationErrors | null {
     const foundBannedWords: string | undefined = this.bannedWords
-      .find((bannedWord: string) => bannedWord.toLowerCase() === control.value.toLowerCase())
+      .find((bannedWord: string) => 
+        bannedWord.toLowerCase() === control.value?.toLowerCase()
+    );
 
     return foundBannedWords
       ? { appBanWords: { bannedWords: foundBannedWords } }
