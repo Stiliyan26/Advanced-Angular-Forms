@@ -6,7 +6,7 @@
       [(ngModel)]="userInfo.firstName"
       required
       minlength="2"
-      [appBanWords]="['test', 'hey']"
+      [appBanWords]="'test'"
       #firstName="ngModel"
       name="first-name"
       type="text"
@@ -62,6 +62,7 @@
       required
       minlength="3"
       pattern="^[\w.]+$"
+      [appBanWords]="['test', 'hey', 'dummy']"
       name="nickname"
       #nickname="ngModel"
       type="text"
@@ -75,7 +76,15 @@
       class="input-error">This field is too short</div>
 
     <div *ngIf="nickname.dirty && nickname.hasError('pattern')"
-      class="input-error">Only letters, numbers, _ and . is allowed</div>
+      class="input-error">Only letters, numbers, _ and . is allowed
+    </div>
+
+    <div *ngIf="nickname.dirty && nickname.hasError('appBanWords')"
+      class="input-error">
+      The value
+      <strong>{{nickname.getError('appBanWords').bannedWords}}</strong> is not
+      allowed
+    </div>
   </div>
 
   <div class="form-field">

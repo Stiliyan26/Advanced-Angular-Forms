@@ -29,7 +29,7 @@ export class BanWordsDirective implements Validator {
     const foundBannedWords: string | undefined = this.bannedWords
       .find((bannedWord: string) => bannedWord.toLowerCase() === control.value.toLowerCase())
 
-    return !foundBannedWords
+    return foundBannedWords
       ? { appBanWords: { bannedWords: foundBannedWords } }
       : null;
   }
