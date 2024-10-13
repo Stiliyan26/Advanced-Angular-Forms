@@ -29,7 +29,7 @@ export class TemplateFormsPageComponent implements OnInit {
     lastName: '',
     nickname: '',
     email: '',
-    yearOfBirth: 0,
+    yearOfBirth: 2022,
     passport: '',
     fullAddress: '',
     city: '',
@@ -40,10 +40,18 @@ export class TemplateFormsPageComponent implements OnInit {
 
   constructor() { }
 
+  get isAdult() {
+    const currentYear = new Date().getFullYear();
+    console.log('isAdult');
+
+    return (currentYear - this.userInfo.yearOfBirth) >= 18;
+  }
+
   get years() {
     const now = new Date().getUTCFullYear();
     return Array(now - (now - 40)).fill('').map((_, idx) => now - idx);
   }
+  
 
   ngOnInit(): void {
   }
