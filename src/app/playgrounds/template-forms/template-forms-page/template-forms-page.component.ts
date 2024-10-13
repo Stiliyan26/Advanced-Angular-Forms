@@ -44,7 +44,14 @@ export class TemplateFormsPageComponent implements OnInit {
     const currentYear = new Date().getFullYear();
     console.log('isAdult');
 
+    console.log((currentYear - this.userInfo.yearOfBirth) >= 18);
     return (currentYear - this.userInfo.yearOfBirth) >= 18;
+  }
+
+  get bannedWordsForNickname(): string[] {
+    console.log(this.isAdult ? ['test', 'test_test', 'dummy'] : []);
+
+    return this.isAdult ? ['test', 'test_test', 'dummy'] : [];
   }
 
   get years() {

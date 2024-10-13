@@ -6,7 +6,7 @@
       [(ngModel)]="userInfo.firstName"
       required
       minlength="2"
-      [appBanWords]="'test'"
+      [appBanWords]="bannedWordsForNickname"
       #firstName="ngModel"
       name="first-name"
       type="text"
@@ -62,7 +62,7 @@
       required
       minlength="3"
       pattern="^[\w.]+$"
-      [appBanWords]="['test', 'hey', 'dummy']"
+      [appBanWords]="bannedWordsForNickname"
       name="nickname"
       #nickname="ngModel"
       type="text"
@@ -238,8 +238,6 @@
         *ngIf="confirmPassword.dirty && confirmPassword.hasError('appPasswordShouldMatch')"
         class="input-error">Password doesn't match
       </div>
-
-      <p>{{ confirmPassword.hasError('appPasswordShouldMatch') | json}}</p>
     </div>
   </fieldset>
 

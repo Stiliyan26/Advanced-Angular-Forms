@@ -19,20 +19,28 @@ export class BanWordsDirective implements Validator {
     this.bannedWords = Array.isArray(value)
       ? value
       : [value];
+
+    this.onChange();
   };
 
   private bannedWords: string[] = [];
+
+  private onChange: () => void = () => { };
 
   constructor() { }
 
   validate(control: AbstractControl<string>): ValidationErrors | null {
     const foundBannedWords: string | undefined = this.bannedWords
-      .find((bannedWord: string) => 
+      .find((bannedWord: string) =>
         bannedWord.toLowerCase() === control.value?.toLowerCase()
-    );
+      );
 
     return foundBannedWords
       ? { appBanWords: { bannedWords: foundBannedWords } }
       : null;
+  }
+
+  registerOnValidatorChange(fn: () => void) {
+    this.onChange = fn;
   }
 }
