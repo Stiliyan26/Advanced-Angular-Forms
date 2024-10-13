@@ -14,6 +14,7 @@
   --border-radius: 10px;
   --spacing-step: 8px;
   --font-size-h1: 34px;
+  --color-info: #449eff
 }
 
 body, html, p, h1, h2, h3, h4, h5, span {
@@ -102,17 +103,26 @@ button[disabled] {
   pointer-events: none;
 }
 
-.input-error {
-  color: var(--color-error);
+@mixin input-message() {
   font-size: 12px;
   box-sizing: border-box;
   padding: 2px 13px;
 
-  animation-name: error-message-animation;
+  animation-name: input-message-animation;
   animation-duration: 300ms;
 }
 
-@keyframes error-message-animation {
+.input-error {
+  @include input-message;
+  color: var(--color-error);
+}
+
+.input-info {
+  @include input-message;
+  color: var(--color-info);
+}
+
+@keyframes input-message-animation {
   from {
     opacity: 0;
     transform: translateY(-6px);

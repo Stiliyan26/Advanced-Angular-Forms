@@ -6,7 +6,7 @@
       [(ngModel)]="userInfo.firstName"
       required
       minlength="2"
-      [appBanWords]="bannedWordsForNickname"
+      [appBanWords]="this.isAdult ? ['test', 'test_test', 'dummy'] : []"
       #firstName="ngModel"
       name="first-name"
       type="text"
@@ -59,10 +59,12 @@
 
     <input
       [(ngModel)]="userInfo.nickname"
+      [ngModelOptions]="{ updateOn: 'blur'}"
       required
       minlength="3"
       pattern="^[\w.]+$"
-      [appBanWords]="bannedWordsForNickname"
+      [appBanWords]="this.isAdult ? ['test', 'test_test', 'dummy'] : []"
+      appUniqueNickname
       name="nickname"
       #nickname="ngModel"
       type="text"
@@ -85,6 +87,12 @@
       <strong>{{nickname.getError('appBanWords').bannedWords}}</strong> is not
       allowed
     </div>
+
+    <div *ngIf="nickname.dirty && nickname.hasError('appUniqueNickname')" class="input-error">
+      This nickname is taken
+    </div>
+
+    <div *ngIf="nickname.pending" class="input-info">Checking...</div>
   </div>
 
   <div class="form-field">
@@ -241,5 +249,5 @@
     </div>
   </fieldset>
 
-  <button [disabled]="form.invalid">Save</button>
+  <button [disabled]="form.invalid || form.pending">Save</button>
 </form>

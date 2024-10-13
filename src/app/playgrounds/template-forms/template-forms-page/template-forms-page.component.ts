@@ -4,6 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { UserInfo } from '../../../core/models/user-info';
 import { BanWordsDirective } from '../validators/ban-words.directive';
 import { PasswordShouldMatchDirective } from '../validators/password-should-match.directive';
+import { UniqueNicknameDirective } from '../validators/unique-nickname.directive';
 
 @Component({
   selector: 'app-template-forms-page',
@@ -12,7 +13,8 @@ import { PasswordShouldMatchDirective } from '../validators/password-should-matc
     CommonModule,
     FormsModule,
     BanWordsDirective,
-    PasswordShouldMatchDirective
+    PasswordShouldMatchDirective,
+    UniqueNicknameDirective
   ],
   templateUrl: './template-forms-page.component.html',
   styleUrls: [
@@ -42,16 +44,8 @@ export class TemplateFormsPageComponent implements OnInit {
 
   get isAdult() {
     const currentYear = new Date().getFullYear();
-    console.log('isAdult');
 
-    console.log((currentYear - this.userInfo.yearOfBirth) >= 18);
     return (currentYear - this.userInfo.yearOfBirth) >= 18;
-  }
-
-  get bannedWordsForNickname(): string[] {
-    console.log(this.isAdult ? ['test', 'test_test', 'dummy'] : []);
-
-    return this.isAdult ? ['test', 'test_test', 'dummy'] : [];
   }
 
   get years() {
