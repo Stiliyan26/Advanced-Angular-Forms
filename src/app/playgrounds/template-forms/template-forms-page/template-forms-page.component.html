@@ -6,7 +6,7 @@
       [(ngModel)]="userInfo.firstName"
       required
       minlength="2"
-      appBanWords="test"
+      [appBanWords]="['test', 'hey']"
       #firstName="ngModel"
       name="first-name"
       type="text"
@@ -22,8 +22,11 @@
       characters
     </div>
 
-    <div *ngIf="firstName.dirty && firstName.hasError('appBanWords')" class="input-error">
-      The value <strong>{{firstName.getError('appBanWords').bannedWord}}</strong> is not allowed
+    <div *ngIf="firstName.dirty && firstName.hasError('appBanWords')"
+      class="input-error">
+      The value
+      <strong>{{firstName.getError('appBanWords').bannedWords}}</strong> is not
+      allowed
     </div>
   </div>
 
