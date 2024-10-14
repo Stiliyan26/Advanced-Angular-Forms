@@ -1,4 +1,9 @@
-<form class="form" #form="ngForm" (ngSubmit)="onSubmitForm(form, $event)">
+<form
+  class="form"
+  #form="ngForm"
+  (ngSubmit)="onSubmitForm($event)"
+  (reset)="onReset($event)"
+  >
   <div class="form-field">
     <label for="name">First Name</label>
 
@@ -88,7 +93,8 @@
       allowed
     </div>
 
-    <div *ngIf="nickname.dirty && nickname.hasError('appUniqueNickname')" class="input-error">
+    <div *ngIf="nickname.dirty && nickname.hasError('appUniqueNickname')"
+      class="input-error">
       This nickname is taken
     </div>
 
@@ -146,7 +152,8 @@
         class="input-error">Invalid passport number
       </div>
 
-      <div *ngIf="passport.dirty && passport.hasError('required')" class="input-error">
+      <div *ngIf="passport.dirty && passport.hasError('required')"
+        class="input-error">
         Required for adults
       </div>
     </div>
@@ -204,12 +211,13 @@
     </div>
   </fieldset>
 
-  <fieldset ngModelGroup="password" appPasswordShouldMatch #passwordGroup="ngModelGroup">
+  <fieldset ngModelGroup="password" appPasswordShouldMatch
+    #passwordGroup="ngModelGroup">
     <legend>User Password</legend>
 
     <div class="form-field">
       <label for="password">Password</label>
-      
+
       <input
         [(ngModel)]="userInfo.password"
         required
@@ -220,11 +228,13 @@
         id="password"
         placeholder="Enter user's password">
 
-      <div *ngIf="password.dirty && password.hasError('required')" class="input-error">
+      <div *ngIf="password.dirty && password.hasError('required')"
+        class="input-error">
         This field is required
       </div>
 
-      <div *ngIf="password.dirty && password.hasError('minlength')" class="input-error">
+      <div *ngIf="password.dirty && password.hasError('minlength')"
+        class="input-error">
         Password length should be at least
         <strong>{{password.getError('minlength').requiredLength}}</strong>
         characters
@@ -250,4 +260,5 @@
   </fieldset>
 
   <button [disabled]="form.invalid || form.pending">Save</button>
+  <button type="reset" class="reset-button">Reset</button>
 </form>

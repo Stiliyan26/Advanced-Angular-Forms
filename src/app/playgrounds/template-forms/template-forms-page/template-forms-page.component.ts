@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { CommonModule, NgFor } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UserInfo } from '../../../core/models/user-info';
 import { BanWordsDirective } from '../validators/ban-words.directive';
@@ -24,7 +24,7 @@ import { UniqueNicknameDirective } from '../validators/unique-nickname.directive
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TemplateFormsPageComponent implements OnInit {
+export class TemplateFormsPageComponent implements OnInit, AfterViewInit {
 
   userInfo: UserInfo = {
     firstName: '',
@@ -40,6 +40,11 @@ export class TemplateFormsPageComponent implements OnInit {
     confirmPassword: ''
   };
 
+  @ViewChild(NgForm) 
+  formDir!: NgForm;
+
+  private inialFormValues: unknown;
+
   constructor() { }
 
   get isAdult() {
@@ -52,14 +57,34 @@ export class TemplateFormsPageComponent implements OnInit {
     const now = new Date().getUTCFullYear();
     return Array(now - (now - 40)).fill('').map((_, idx) => now - idx);
   }
-  
+
 
   ngOnInit(): void {
   }
 
-  onSubmitForm(form: NgForm, e: SubmitEvent): void {
-    console.log('The form has been submited', form.value);
-    console.log('Native submit event', e);
+  ngAfterViewInit(): void {
+    queueMicrotask(() => {
+      this.inialFormValues = this.formDir.value;
+    });
+  }
 
+  onSubmitForm(e: SubmitEvent): void {
+    // Strategy 1 - Reset form values, validation statuses, making controls untouched, pristine, etc
+    // form.resetForm();
+    // form.resetForm();
+    // Strategy 2 - Reset only control statuses but not values.
+    //  form.resetForm({
+    //   'first-name': form.controls['first-name'].value
+    //  });
+
+    this.formDir.resetForm(this.formDir.value);
+    this.inialFormValues = this.formDir.value;                                                    
+    // console.log('The native submit event', e);
+  }
+
+  onReset(e: Event) {
+    e.preventDefault();
+
+     this.formDir.resetForm(this.inialFormValues);
   }
 }
