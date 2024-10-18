@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
-import { CommonModule, NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UserInfo } from '../../../core/models/user-info';
 import { BanWordsDirective } from '../validators/ban-words.directive';
