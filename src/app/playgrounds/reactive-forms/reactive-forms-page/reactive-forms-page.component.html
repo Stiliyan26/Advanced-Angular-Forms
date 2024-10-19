@@ -78,12 +78,12 @@
     </div>
   </fieldset>
 
-  <fieldset>
+  <fieldset formGroupName="skills">
     <legend>User Skills</legend>
 
     <ng-container *ngIf="skills$ | async as skills; else loading">
       <div class="skill-container" *ngFor="let skill of skills">
-        <input type="checkbox" [id]="skill">
+        <input type="checkbox" [formControlName]="skill" [id]="skill">
         <label [for]="skill">{{ skill | titlecase }}</label>
       </div>
     </ng-container>

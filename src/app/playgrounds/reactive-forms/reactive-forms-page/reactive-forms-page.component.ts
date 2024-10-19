@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { UserSkillsService } from '../../../core/user-skills.service';
 
 @Component({
@@ -32,7 +32,7 @@ export class ReactiveFormsPageComponent implements OnInit {
     lastName: new FormControl('Mezhenskyi'),
     nickname: new FormControl(''),
     email: new FormControl('dmytro@decodedfrontend.io'),
-    yearOfBirth: new FormControl(this.years[this.years.length -1], { nonNullable: true }),
+    yearOfBirth: new FormControl(this.years[this.years.length - 1], { nonNullable: true }),
     passport: new FormControl(''),
     address: new FormGroup({
       fullAddress: new FormControl('', { nonNullable: true }),
@@ -44,14 +44,27 @@ export class ReactiveFormsPageComponent implements OnInit {
         label: new FormControl(this.phoneLabels[0], { nonNullable: true }),
         phone: new FormControl('')
       })
-    ])
+    ]),
+    skills: new FormGroup<{ [key: string]: FormControl<boolean> }>({})
   });
 
 
   constructor(private userSkills: UserSkillsService) { }
 
   ngOnInit(): void {
-    this.skills$ = this.userSkills.getSkills();
+    this.skills$ = this.userSkills.getSkills()
+      .pipe(
+        tap(skills => this.buildSkillControls(skills))
+      );
+  }
+
+  buildSkillControls(skills: string[]): void {
+    skills.forEach(skill => {
+      this.form.controls.skills.addControl(
+        skill,
+        new FormControl(false, { nonNullable: true })
+      )
+    });
   }
 
   addPhone() {
