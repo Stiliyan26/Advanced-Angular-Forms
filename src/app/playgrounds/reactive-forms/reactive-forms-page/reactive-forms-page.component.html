@@ -1,4 +1,4 @@
-<form [formGroup]="form" class="form">
+<form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="form">
   <pre>{{form.value | json}}</pre>
   <div class="form-field">
     <label for="name">First Name</label>

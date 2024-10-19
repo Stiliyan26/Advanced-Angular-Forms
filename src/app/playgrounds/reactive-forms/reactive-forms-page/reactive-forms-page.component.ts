@@ -60,6 +60,10 @@ export class ReactiveFormsPageComponent implements OnInit {
     });
   }
 
+  onSubmit(e: Event) {
+    console.log(this.form.value);
+  }
+
   private getYears() {
     const now = new Date().getUTCFullYear();
     return Array(now - (now - 40)).fill('').map((_, idx) => now - idx);
