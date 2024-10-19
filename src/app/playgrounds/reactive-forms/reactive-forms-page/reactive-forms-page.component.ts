@@ -25,7 +25,6 @@ export class ReactiveFormsPageComponent implements OnInit {
   private fb = inject(FormBuilder);
   private userSkills = inject(UserSkillsService);
 
-
   form = this.fb.group({
     firstName: ['Dmytro', [
       Validators.required,
