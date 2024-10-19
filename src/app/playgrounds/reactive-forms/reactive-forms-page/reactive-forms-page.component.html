@@ -102,6 +102,11 @@
           *ngIf="passport.dirty && passport.hasError('pattern')">
           Allowed format is: AB123456
         </div>
+
+        <div class="input-error"
+          *ngIf="passport.dirty && passport.hasError('required')">
+          This field is required
+        </div>
       </ng-container>
     </div>
   </div>
@@ -184,6 +189,36 @@
         <label [for]="skill">{{ skill | titlecase }}</label>
       </div>
     </ng-container>
+  </fieldset>
+
+  <fieldset formGroupName="password">
+    <legend>Password</legend>
+
+    <div class="form-field">
+      <label for="password">Create Password</label>
+
+      <input formControlName="password" type="password" id="password" placeholder="Enter password...">
+
+      <ng-container *ngIf="form.controls.password.controls.password as password">
+        <div class="input-error" *ngIf="password.dirty && password.hasError('required')">This field is required</div>
+        
+        <div class="input-error" *ngIf="password.dirty && password.hasError('minlength')">
+          Password should be at least <strong>{{password.getError('minlength').requiredLength}}</strong> characters
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="form-field">
+      <label for="confirm-password">Confirm Password</label>
+
+      <input formControlName="confirmPassword" type="password" id="confirm-password" placeholder="Enter password...">
+      
+      <ng-container *ngIf="form.controls.password.controls.confirmPassword as confirmPassword">
+        <div class="input-error" *ngIf="confirmPassword.hasError('passwordShouldMatch') && confirmPassword.dirty">
+          Password doesn't match
+        </div>
+      </ng-container>
+    </div>
   </fieldset>
 
   <button [disabled]="form.invalid">Save</button>
