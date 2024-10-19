@@ -13,7 +13,12 @@
 
       <div class="input-error"
         *ngIf=" firstName.dirty && firstName.hasError('minlength')">
-        This name is too short
+        This name must be at least <strong>{{firstName.getError('minlength').requiredLength}}</strong> characters
+      </div>
+
+      <div class="input-error"
+        *ngIf=" firstName.dirty && firstName.hasError('banWords')">
+        The value <strong>{{firstName.getError('banWords').bannedWord}}</strong> is banned
       </div>
     </ng-container>
   </div>

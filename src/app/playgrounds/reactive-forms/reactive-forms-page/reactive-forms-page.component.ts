@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Observable, tap } from 'rxjs';
 import { UserSkillsService } from '../../../core/user-skills.service';
+import { banWords } from './validators/ban-words.validator';
 
 @Component({
   selector: 'app-reactive-forms-page',
@@ -28,7 +29,8 @@ export class ReactiveFormsPageComponent implements OnInit {
   form = this.fb.group({
     firstName: ['Dmytro', [
       Validators.required,
-      Validators.minLength(2)
+      Validators.minLength(2),
+      banWords
     ]],
     lastName: ['Mezhenskyi', [
       Validators.required,
