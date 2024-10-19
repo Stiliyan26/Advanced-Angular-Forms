@@ -30,7 +30,7 @@ export class ReactiveFormsPageComponent implements OnInit {
     firstName: ['Dmytro', [
       Validators.required,
       Validators.minLength(2),
-      banWords
+      banWords(['test', 'dummy'])
     ]],
     lastName: ['Mezhenskyi', [
       Validators.required,
