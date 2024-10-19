@@ -59,22 +59,39 @@
     </div>
 
     <div class="form-field"
-      *ngFor="let phone of form.controls.phones.controls; index as i" [formGroupName]="i">
+      *ngFor="let phone of form.controls.phones.controls; index as i"
+      [formGroupName]="i">
       <label for="phone-{{i}}">Phone number</label>
 
       <div class="control-container">
         <select class="phone-label-dropdown" formControlName="label">
-          <option *ngFor="let label of phoneLabels" [value]="label">{{label}}</option>
+          <option *ngFor="let label of phoneLabels"
+            [value]="label">{{label}}</option>
         </select>
 
         <input formControlName="phone" type="text"
           placeholder="Enter Phone Number" id="phone-{{i}}">
-          
+
         <button class="remove-button" (click)="removePhone(i)"
           type="button">-</button>
       </div>
     </div>
   </fieldset>
 
+  <fieldset>
+    <legend>User Skills</legend>
+
+    <ng-container *ngIf="skills$ | async as skills; else loading">
+      <div class="skill-container" *ngFor="let skill of skills">
+        <input type="checkbox" [id]="skill">
+        <label [for]="skill">{{ skill | titlecase }}</label>
+      </div>
+    </ng-container>
+  </fieldset>
+
   <button>Save</button>
 </form>
+
+<ng-template #loading>
+  <p>Skills are being loaded</p>
+</ng-template>

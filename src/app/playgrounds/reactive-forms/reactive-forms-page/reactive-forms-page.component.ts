@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { UserSkillsService } from '../../../core/user-skills.service';
 
 @Component({
   selector: 'app-reactive-forms-page',
@@ -17,15 +19,13 @@ import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular
 export class ReactiveFormsPageComponent implements OnInit {
 
   phoneLabels = ['Main', 'Mobile', 'Work', 'Home'];
-
+  years = this.getYears();
+  skills$!: Observable<string[]>;
   //It is used to set a diffrent types
   // UntypeFormControl
 
   //When resetting the filed it will set the default value otherwise it will be empty
   // firstName: new FormControl<string>('Dmytro', { nonNullable: true }),
-
-  years = this.getYears();
-
 
   form = new FormGroup({
     firstName: new FormControl<string>('Dmytro'),
@@ -48,9 +48,10 @@ export class ReactiveFormsPageComponent implements OnInit {
   });
 
 
-  constructor() { }
+  constructor(private userSkills: UserSkillsService) { }
 
   ngOnInit(): void {
+    this.skills$ = this.userSkills.getSkills();
   }
 
   addPhone() {
