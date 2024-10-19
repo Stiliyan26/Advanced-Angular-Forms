@@ -18,24 +18,35 @@ export class ReactiveFormsPageComponent implements OnInit {
 
   phoneLabels = ['Main', 'Mobile', 'Work', 'Home'];
 
+  //It is used to set a diffrent types
+  // UntypeFormControl
+
+  //When resetting the filed it will set the default value otherwise it will be empty
+  // firstName: new FormControl<string>('Dmytro', { nonNullable: true }),
+
+  years = this.getYears();
+
+
   form = new FormGroup({
-    firstName: new FormControl('Dmytro'),
+    firstName: new FormControl<string>('Dmytro'),
     lastName: new FormControl('Mezhenskyi'),
     nickname: new FormControl(''),
     email: new FormControl('dmytro@decodedfrontend.io'),
-    yearOfBirth: new FormControl(1983),
+    yearOfBirth: new FormControl(this.years[this.years.length -1], { nonNullable: true }),
     passport: new FormControl(''),
     address: new FormGroup({
-      fullAddress: new FormControl(''),
-      city: new FormControl(''),
-      postCode: new FormControl(0),
+      fullAddress: new FormControl('', { nonNullable: true }),
+      city: new FormControl('', { nonNullable: true }),
+      postCode: new FormControl(0, { nonNullable: true }),
     }),
     phones: new FormArray([
-      this.addNewPhoneFormGroup()
+      new FormGroup({
+        label: new FormControl(this.phoneLabels[0], { nonNullable: true }),
+        phone: new FormControl('')
+      })
     ])
   });
 
-  years = this.getYears();
 
   constructor() { }
 
@@ -53,9 +64,9 @@ export class ReactiveFormsPageComponent implements OnInit {
     this.form.controls.phones.removeAt(index);
   }
 
-  addNewPhoneFormGroup() {
+  private addNewPhoneFormGroup() {
     return new FormGroup({
-      label: new FormControl(this.phoneLabels[0]),
+      label: new FormControl(this.phoneLabels[0], { nonNullable: true }),
       phone: new FormControl('')
     });
   }
