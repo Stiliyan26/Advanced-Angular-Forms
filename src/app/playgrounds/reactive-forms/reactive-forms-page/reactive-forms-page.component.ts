@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormGroupDirective, ReactiveFormsModule, Validators } from '@angular/forms';
 import { bufferCount, filter, Observable, startWith, Subscription, tap } from 'rxjs';
 import { UserSkillsService } from '../../../core/user-skills.service';
 import { banWords } from './validators/ban-words.validator';
@@ -29,10 +29,15 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
   private ageValidators!: Subscription;
   private formPendingState!: Subscription;
 
+  private initalFormValues: any;
+
   private fb = inject(FormBuilder);
   private userSkills = inject(UserSkillsService);
   private uniqueNickname = inject(UniqueNicknameValidator);
   private cd = inject(ChangeDetectorRef);
+
+  @ViewChild(FormGroupDirective)
+  private formDir!: FormGroupDirective
 
   form = this.fb.group({
     firstName: ['Dmytro', [
@@ -83,7 +88,8 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.skills$ = this.userSkills.getSkills().pipe(
-      tap(skills => this.buildSkillControls(skills))
+      tap(skills => this.buildSkillControls(skills)),
+      tap(() => this.initalFormValues = this.form.value)
     );
 
     this.ageValidators = this.form.controls.yearOfBirth.valueChanges
@@ -128,6 +134,14 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
 
   onSubmit(e: Event) {
     console.log(this.form.value);
+    this.initalFormValues = this.form.value;  
+    this.formDir.resetForm(this.form.value);
+  }
+
+  onReset(e: Event) {
+    e.preventDefault();
+
+    this.formDir.resetForm(this.initalFormValues);
   }
 
   private getYears() {
