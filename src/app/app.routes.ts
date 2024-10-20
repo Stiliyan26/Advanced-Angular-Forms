@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'reactive-forms',
+    redirectTo: 'custom-rating-picker',
     pathMatch: 'full'
   },
   {
@@ -19,5 +19,12 @@ export const routes: Routes = [
     loadComponent:
       () => import('./playgrounds/reactive-forms/reactive-forms-page/reactive-forms-page.component')
         .then(m => m.ReactiveFormsPageComponent)   
+  },
+  {
+    path: 'custom-rating-picker',
+    title: 'Custom Rating Picker Playground',
+    loadComponent:
+      () => import('./playgrounds/custom-rating-picker/rating-picker-page/rating-picker-page.component')
+        .then(m => m.RatingPickerPageComponent)   
   }
 ];
