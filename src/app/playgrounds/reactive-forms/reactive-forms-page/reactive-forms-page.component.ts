@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Observable, startWith, Subscription, tap } from 'rxjs';
+import { bufferCount, filter, Observable, startWith, Subscription, tap } from 'rxjs';
 import { UserSkillsService } from '../../../core/user-skills.service';
 import { banWords } from './validators/ban-words.validator';
 import { passwordShouldMatch } from './validators/password-should-match.validator';
+import { UniqueNicknameValidator } from './validators/unique-nickname.validator';
+
 
 @Component({
   selector: 'app-reactive-forms-page',
@@ -24,9 +26,13 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
   years = this.getYears();
   skills$!: Observable<string[]>;
 
+  private ageValidators!: Subscription;
+  private formPendingState!: Subscription;
+
   private fb = inject(FormBuilder);
   private userSkills = inject(UserSkillsService);
-  private ageValidators!: Subscription;
+  private uniqueNickname = inject(UniqueNicknameValidator);
+  private cd = inject(ChangeDetectorRef);
 
   form = this.fb.group({
     firstName: ['Dmytro', [
@@ -38,11 +44,17 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
       Validators.required,
       Validators.minLength(2)
     ]],
-    nickname: ['', [
-      Validators.required,
-      Validators.minLength(2),
-      Validators.pattern(/^[\w.]+$/)
-    ]],
+    nickname: ['', {
+      validators: [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.pattern(/^[\w.]+$/)
+      ],
+      asyncValidators: [
+        this.uniqueNickname.validate.bind(this.uniqueNickname)
+      ],
+      updateOn: 'blur'
+    }],
     email: ['dmytro@decodedfrontend.io', Validators.email],
     yearOfBirth: this.fb.nonNullable.control(this.years[this.years.length - 1], Validators.required),
     passport: ['', Validators.pattern(/^[A-Z]{2}[0-9]{6}$/)],
@@ -88,10 +100,17 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
           this.form.controls.passport.updateValueAndValidity();
         }
       );
+
+    this.formPendingState = this.form.statusChanges
+      .pipe(
+        bufferCount(2, 1),
+        filter(([prevState]) => prevState === 'PENDING')
+      ).subscribe(() => this.cd.markForCheck())
   }
 
   ngOnDestroy(): void {
     this.ageValidators.unsubscribe();
+    this.formPendingState.unsubscribe();
   }
 
   addPhone() {
