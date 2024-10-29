@@ -1,7 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import {
+  AfterContentInit,
+  Component,
+  ContentChildren,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+  QueryList
+} from '@angular/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { animate, AnimationEvent, state, style, transition, trigger } from '@angular/animations';
+import { OptionComponent } from '../option/option.component';
+import { SelectionModel } from '@angular/cdk/collections';
+import { merge, startWith, switchMap } from 'rxjs';
 
 
 @Component({
@@ -19,13 +31,25 @@ import { animate, AnimationEvent, state, style, transition, trigger } from '@ang
     ])
   ]
 })
-export class SelectComponent implements OnInit {
+export class SelectComponent implements AfterContentInit {
 
   @Input()
   label = '';
 
   @Input()
-  value: string | null = null;
+  set value(value: string | null) {
+    this.selectionModel.clear();
+
+    if (value) {
+      this.selectionModel.select(value);
+    }
+  };
+
+  get value() {
+    return this.selectionModel.selected[0] || null;
+  }
+
+  private selectionModel = new SelectionModel<string>();
 
   @Output()
   readonly opened = new EventEmitter<void>();
@@ -40,21 +64,43 @@ export class SelectComponent implements OnInit {
   close() {
     this.isOpen = false;
   }
-  
+  //Descendants instrcts to select the indirect options if the optionComponents is nestead in an element
+  @ContentChildren(OptionComponent, { descendants: true })
+  options!: QueryList<OptionComponent>;
+
   isOpen = false;
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngAfterContentInit(): void {
+    this.highlightSelectedOptions(this.value);
 
+    this.selectionModel.changed.subscribe(values => {
+      values.removed.forEach(rv => this.findOptionByValue(rv)?.deselect())
+    });
+
+    this.options.changes.pipe(
+      startWith<QueryList<OptionComponent>>(this.options),
+      switchMap(options => merge(...options.map(o => o.selected))) //cancels previous subscribtion helps with memory leak
+    ).subscribe(selectedOption => {
+      selectedOption.value && this.selectionModel.select(selectedOption.value);
+    });
   }
 
-  onPanelAnimationDone(event: AnimationEvent) {
+  onPanelAnimationDone(event: AnimationEvent): void {
     if (event.fromState === 'void' && event.toState === null && this.isOpen) {
       this.opened.emit();
     }
     if (event.fromState === null && event.toState === 'void' && !this.isOpen) {
       this.closed.emit();
     }
+  }
+
+  private highlightSelectedOptions(value: string | null): void {
+    this.findOptionByValue(value)?.highlightAsSelected();
+  }
+
+  private findOptionByValue(value: string | null): OptionComponent | undefined {
+    return this.options && this.options.find(o => o.value === value);
   }
 }

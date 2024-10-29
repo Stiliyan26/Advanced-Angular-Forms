@@ -24,10 +24,25 @@
       transform: translateX(7px);
     }
   }
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    border: var(--color-text-light) dashed;
+  }
 }
 
 .option-content {
   transition: transform 320s ease-out;
+  width: 100%;
+}
+
+.disabled-reason:not(:empty) {
+  font-size: 8px;
+  background: #d7d8d9;
+  padding: 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
 }
 
 @keyframes checked-option {

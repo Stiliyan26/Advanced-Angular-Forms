@@ -1,9 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, HostBinding, HostListener, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-option',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './option.component.html',
   styleUrl: './option.component.scss'
 })
@@ -12,13 +13,23 @@ export class OptionComponent implements OnInit {
   @Input()
   value: string | null = null;
 
+  @Input()
+  disabledReason = ''
+
+  @Input()
+  @HostBinding('class.disabled')
+  disabled = false;
+
   @Output()
   selected = new EventEmitter<OptionComponent>();
 
   @HostListener('click')
-  select() { 
-    this.isSelected = true;
-    this.selected.emit(this);
+  protected select() { 
+    if (!this.disabled) {
+      this.highlightAsSelected();
+      this.selected.emit(this);
+    }
+
   }
 
   @HostBinding('class.selected')
@@ -27,6 +38,10 @@ export class OptionComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void { }
+
+  highlightAsSelected() {
+    this.isSelected = true;
+  }
 
   deselect() {
     this.isSelected = false;
