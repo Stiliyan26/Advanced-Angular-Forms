@@ -18,6 +18,7 @@
   padding: calc(var(--spacing-step) * 3);
   box-sizing: border-box;
   min-height: var(--min-height);
+  position: relative;
 }
 
 .footer {

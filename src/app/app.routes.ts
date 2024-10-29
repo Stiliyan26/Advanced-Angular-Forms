@@ -26,5 +26,12 @@ export const routes: Routes = [
     loadComponent:
       () => import('./playgrounds/custom-rating-picker/rating-picker-page/rating-picker-page.component')
         .then(m => m.RatingPickerPageComponent)   
+  },
+  {
+    path: 'custom-select',
+    title: 'Custom Select Playground',
+    loadComponent:
+      () => import('./playgrounds/custom-select/custom-select.component')
+        .then(m => m.CustomSelectComponent)   
   }
 ];
