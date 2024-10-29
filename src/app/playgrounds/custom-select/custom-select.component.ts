@@ -12,4 +12,7 @@ import { OptionComponent } from '../../custom-form-control/option/option.compone
 })
 export class CustomSelectComponent {
 
+  onSelectionChanged(value: string | null) {
+    console.log('Selected value: ', value);
+  }
 }

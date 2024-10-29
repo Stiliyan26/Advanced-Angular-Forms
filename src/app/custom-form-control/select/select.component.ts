@@ -6,6 +6,7 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnDestroy,
   Output,
   QueryList
 } from '@angular/core';
@@ -13,7 +14,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { animate, AnimationEvent, state, style, transition, trigger } from '@angular/animations';
 import { OptionComponent } from '../option/option.component';
 import { SelectionModel } from '@angular/cdk/collections';
-import { merge, startWith, switchMap } from 'rxjs';
+import { merge, startWith, Subject, switchMap, takeUntil } from 'rxjs';
 
 
 @Component({
@@ -31,7 +32,7 @@ import { merge, startWith, switchMap } from 'rxjs';
     ])
   ]
 })
-export class SelectComponent implements AfterContentInit {
+export class SelectComponent implements AfterContentInit, OnDestroy {
 
   @Input()
   label = '';
@@ -55,12 +56,16 @@ export class SelectComponent implements AfterContentInit {
   readonly opened = new EventEmitter<void>();
 
   @Output()
+  readonly selectionChanged = new EventEmitter<string | null>();
+
+  @Output()
   readonly closed = new EventEmitter<void>();
 
   @HostListener('click')
   open() {
     this.isOpen = true;
   }
+
   close() {
     this.isOpen = false;
   }
@@ -70,21 +75,29 @@ export class SelectComponent implements AfterContentInit {
 
   isOpen = false;
 
+  private unsubscribe$ = new Subject<void>();
+
   constructor() { }
 
   ngAfterContentInit(): void {
     this.highlightSelectedOptions(this.value);
 
-    this.selectionModel.changed.subscribe(values => {
-      values.removed.forEach(rv => this.findOptionByValue(rv)?.deselect())
-    });
+    this.selectionModel.changed
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(values => {
+        values.removed.forEach(rv => this.findOptionByValue(rv)?.deselect())
+      });
 
     this.options.changes.pipe(
       startWith<QueryList<OptionComponent>>(this.options),
-      switchMap(options => merge(...options.map(o => o.selected))) //cancels previous subscribtion helps with memory leak
-    ).subscribe(selectedOption => {
-      selectedOption.value && this.selectionModel.select(selectedOption.value);
-    });
+      switchMap(options => merge(...options.map(o => o.selected))), //cancels previous subscribtion helps with memory leak
+      takeUntil(this.unsubscribe$)
+    ).subscribe(selectedOption => this.handleSelection(selectedOption));
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   onPanelAnimationDone(event: AnimationEvent): void {
@@ -94,6 +107,15 @@ export class SelectComponent implements AfterContentInit {
     if (event.fromState === null && event.toState === 'void' && !this.isOpen) {
       this.closed.emit();
     }
+  }
+
+  private handleSelection(option: OptionComponent) {
+    if (option.value) {
+      this.selectionModel.toggle(option.value);
+      this.selectionChanged.emit(this.value);
+    }
+
+    this.close();
   }
 
   private highlightSelectedOptions(value: string | null): void {
