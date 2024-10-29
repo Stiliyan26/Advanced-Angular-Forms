@@ -1,4 +1,4 @@
-<app-select (selectionChanged)="onSelectionChanged($event)" value="niels" label="Pick the User">
+<app-select (selectionChanged)="onSelectionChanged($event)" [value]="selectValue" label="Pick the User">
   <app-option value="albert">Albert</app-option>
   <app-option value="niels">Niels Bohr</app-option>
   <app-option value="marie">Marie Curie</app-option>

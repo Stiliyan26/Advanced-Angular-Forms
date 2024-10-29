@@ -85,7 +85,10 @@ export class SelectComponent implements AfterContentInit, OnDestroy {
     this.selectionModel.changed
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(values => {
-        values.removed.forEach(rv => this.findOptionByValue(rv)?.deselect())
+        values.removed.forEach(rv => this.findOptionByValue(rv)?.deselect());
+        console.log(values);
+        
+        values.added.forEach(av => this.findOptionByValue(av)?.highlightAsSelected());
       });
 
     this.options.changes.pipe(
