@@ -1,9 +1,12 @@
 <app-select
   (selectionChanged)="onSelectionChanged($event)"
+  [compareWith]="compareWithFn"
   [displayWith]="displayWithFn"
   [value]="selectValue"
   label="Pick the User">
-  <app-option *ngFor="let user of users" [value]="user">
+  <app-option 
+    *ngFor="let user of users" 
+    [value]="user">
     {{user.name}}
   </app-option>
 </app-select>

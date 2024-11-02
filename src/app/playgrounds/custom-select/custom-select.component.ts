@@ -43,6 +43,10 @@ export class CustomSelectComponent implements OnInit {
     return user.name;
   }
 
+  compareWithFn(user: User | null, user2: User | null) {
+    return user?.id === user2?.id;
+  }
+
   onSelectionChanged(value: unknown) {
     console.log('Selected value: ', value);
   }

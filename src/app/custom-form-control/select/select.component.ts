@@ -7,9 +7,13 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnChanges,
   OnDestroy,
+  OnInit,
   Output,
-  QueryList
+  QueryList,
+  SimpleChange,
+  SimpleChanges
 } from '@angular/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { animate, AnimationEvent, state, style, transition, trigger } from '@angular/animations';
@@ -36,13 +40,16 @@ export type SelectValue<T> = T | null;
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SelectComponent<T> implements AfterContentInit, OnDestroy {
+export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestroy {
 
   @Input()
   label = '';
 
   @Input()
   displayWith: ((value: T) => string | number ) | null = null;
+
+  @Input()
+  compareWith: ((v1: T | null, v2: T | null) => boolean) = (v1, v2) => v1 === v2;
 
   @Input()
   set value(value: SelectValue<T>) {
@@ -94,6 +101,13 @@ export class SelectComponent<T> implements AfterContentInit, OnDestroy {
 
   constructor() { }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['compareWith']) {
+      this.selectionModel.compareWith =  changes['compareWith'].currentValue;
+      this.highlightSelectedOptions(this.value);
+    }
+  }
+
   ngAfterContentInit(): void {
     this.selectionModel.changed
       .pipe(takeUntil(this.unsubscribe$))
@@ -107,6 +121,7 @@ export class SelectComponent<T> implements AfterContentInit, OnDestroy {
     this.options.changes.pipe(
       startWith<QueryList<OptionComponent<T>>>(this.options),
       tap(() => queueMicrotask(() => this.highlightSelectedOptions(this.value))),
+      //Listen to all event emitters
       switchMap(options => merge(...options.map(o => o.selected))), //cancels previous subscribtion helps with memory leak
       takeUntil(this.unsubscribe$)
     ).subscribe(selectedOption => this.handleSelection(selectedOption));
@@ -139,7 +154,7 @@ export class SelectComponent<T> implements AfterContentInit, OnDestroy {
     this.findOptionByValue(value)?.highlightAsSelected();
   }
 
-  private findOptionByValue(value: SelectValue<T>): OptionComponent<T> | undefined {
-    return this.options && this.options.find(o => o.value === value);
+  private findOptionByValue(value: T | null): OptionComponent<T> | undefined {
+    return this.options && this.options.find(o => this.compareWith(o.value, value));
   }
 }
