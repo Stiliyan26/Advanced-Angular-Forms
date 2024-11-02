@@ -97,6 +97,8 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
     return this.value;
   }
 
+  private optionMap = new Map<T | null, OptionComponent<T>>();
+
   private unsubscribe$ = new Subject<void>();
 
   constructor() { }
@@ -112,14 +114,15 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
     this.selectionModel.changed
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(values => {
-        values.removed.forEach(rv => this.findOptionByValue(rv)?.deselect());
-        console.log(values);
+        values.removed.forEach(rv => this.optionMap.get(rv)?.deselect());
+        console.log("Removed values: ", values);
 
-        values.added.forEach(av => this.findOptionByValue(av)?.highlightAsSelected());
+        values.added.forEach(av => this.optionMap.get(av)?.highlightAsSelected());
       });
 
     this.options.changes.pipe(
       startWith<QueryList<OptionComponent<T>>>(this.options),
+      tap(() => this.refreshOptionsMap()),
       tap(() => queueMicrotask(() => this.highlightSelectedOptions())),
       //Listen to all event emitters
       switchMap(options => merge(...options.map(o => o.selected))), //cancels previous subscribtion helps with memory leak
@@ -166,6 +169,15 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
   }
 
   private findOptionByValue(value: T | null): OptionComponent<T> | undefined {
+    if (this.optionMap.has(value)) {
+      return this.optionMap.get(value);
+    }
+
     return this.options && this.options.find(o => this.compareWith(o.value, value));
+  }
+
+  private refreshOptionsMap() {
+    this.optionMap.clear();
+    this.optionMap.forEach(o => this.optionMap.set(o.value, o));
   }
 }
