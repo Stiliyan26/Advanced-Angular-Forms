@@ -46,7 +46,7 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
   label = '';
 
   @Input()
-  displayWith: ((value: T) => string | number ) | null = null;
+  displayWith: ((value: T) => string | number) | null = null;
 
   @Input()
   compareWith: ((v1: T | null, v2: T | null) => boolean) = (v1, v2) => v1 === v2;
@@ -103,8 +103,8 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['compareWith']) {
-      this.selectionModel.compareWith =  changes['compareWith'].currentValue;
-      this.highlightSelectedOptions(this.value);
+      this.selectionModel.compareWith = changes['compareWith'].currentValue;
+      this.highlightSelectedOptions();
     }
   }
 
@@ -120,7 +120,7 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
 
     this.options.changes.pipe(
       startWith<QueryList<OptionComponent<T>>>(this.options),
-      tap(() => queueMicrotask(() => this.highlightSelectedOptions(this.value))),
+      tap(() => queueMicrotask(() => this.highlightSelectedOptions())),
       //Listen to all event emitters
       switchMap(options => merge(...options.map(o => o.selected))), //cancels previous subscribtion helps with memory leak
       takeUntil(this.unsubscribe$)
@@ -150,8 +150,19 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
     this.close();
   }
 
-  private highlightSelectedOptions(value: SelectValue<T>): void {
-    this.findOptionByValue(value)?.highlightAsSelected();
+  private highlightSelectedOptions(): void {
+    const valuesWithUpdatedReferences = this.selectionModel.selected.map(value => {
+      const correspondingOption = this.findOptionByValue(value);
+
+      return correspondingOption
+        ? correspondingOption.value!
+        : value;
+    });
+
+    this.selectionModel.clear();
+    this.selectionModel.select(...valuesWithUpdatedReferences);
+
+    // this.findOptionByValue(value)?.highlightAsSelected();
   }
 
   private findOptionByValue(value: T | null): OptionComponent<T> | undefined {
