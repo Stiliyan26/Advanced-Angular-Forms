@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   AfterContentInit,
+  ChangeDetectionStrategy,
   Component,
   ContentChildren,
   EventEmitter,
@@ -14,7 +15,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { animate, AnimationEvent, state, style, transition, trigger } from '@angular/animations';
 import { OptionComponent } from '../option/option.component';
 import { SelectionModel } from '@angular/cdk/collections';
-import { merge, startWith, Subject, switchMap, takeUntil } from 'rxjs';
+import { merge, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
 
 export type SelectValue<T> = T | null;
@@ -32,7 +33,8 @@ export type SelectValue<T> = T | null;
       transition(':enter', [animate('320ms cubic-bezier(0, 1, 0.45, 1.34)')]),
       transition(':leave', [animate('420ms cubic-bezier(0.88,-0.7, 0.86, 0.85)')]),
     ])
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelectComponent<T> implements AfterContentInit, OnDestroy {
 
@@ -82,19 +84,18 @@ export class SelectComponent<T> implements AfterContentInit, OnDestroy {
   constructor() { }
 
   ngAfterContentInit(): void {
-    this.highlightSelectedOptions(this.value);
-
     this.selectionModel.changed
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(values => {
         values.removed.forEach(rv => this.findOptionByValue(rv)?.deselect());
         console.log(values);
-        
+
         values.added.forEach(av => this.findOptionByValue(av)?.highlightAsSelected());
       });
 
     this.options.changes.pipe(
       startWith<QueryList<OptionComponent<T>>>(this.options),
+      tap(() => queueMicrotask(() => this.highlightSelectedOptions(this.value))),
       switchMap(options => merge(...options.map(o => o.selected))), //cancels previous subscribtion helps with memory leak
       takeUntil(this.unsubscribe$)
     ).subscribe(selectedOption => this.handleSelection(selectedOption));

@@ -2,13 +2,7 @@
   (selectionChanged)="onSelectionChanged($event)"
   [value]="selectValue"
   label="Pick the User">
-  <app-option value="albert">Albert</app-option>
-  <app-option value="niels">Niels Bohr</app-option>
-  <app-option value="marie">Marie Curie</app-option>
-  <app-option
-    disabledReason="Too Smart"
-    [disabled]="true"
-    value="isaac">
-    Isaac Newton
+  <app-option *ngFor="let user of users" [value]="user.name">
+    {{user.name}}
   </app-option>
 </app-select>
