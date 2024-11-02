@@ -17,6 +17,8 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { merge, startWith, Subject, switchMap, takeUntil } from 'rxjs';
 
 
+export type SelectValue<T> = T | null;
+
 @Component({
   selector: 'app-select',
   standalone: true,
@@ -32,13 +34,13 @@ import { merge, startWith, Subject, switchMap, takeUntil } from 'rxjs';
     ])
   ]
 })
-export class SelectComponent implements AfterContentInit, OnDestroy {
+export class SelectComponent<T> implements AfterContentInit, OnDestroy {
 
   @Input()
   label = '';
 
   @Input()
-  set value(value: string | null) {
+  set value(value: SelectValue<T>) {
     this.selectionModel.clear();
 
     if (value) {
@@ -50,13 +52,13 @@ export class SelectComponent implements AfterContentInit, OnDestroy {
     return this.selectionModel.selected[0] || null;
   }
 
-  private selectionModel = new SelectionModel<string>();
+  private selectionModel = new SelectionModel<T>();
 
   @Output()
   readonly opened = new EventEmitter<void>();
 
   @Output()
-  readonly selectionChanged = new EventEmitter<string | null>();
+  readonly selectionChanged = new EventEmitter<SelectValue<T>>();
 
   @Output()
   readonly closed = new EventEmitter<void>();
@@ -71,7 +73,7 @@ export class SelectComponent implements AfterContentInit, OnDestroy {
   }
   //Descendants instrcts to select the indirect options if the optionComponents is nestead in an element
   @ContentChildren(OptionComponent, { descendants: true })
-  options!: QueryList<OptionComponent>;
+  options!: QueryList<OptionComponent<T>>;
 
   isOpen = false;
 
@@ -92,7 +94,7 @@ export class SelectComponent implements AfterContentInit, OnDestroy {
       });
 
     this.options.changes.pipe(
-      startWith<QueryList<OptionComponent>>(this.options),
+      startWith<QueryList<OptionComponent<T>>>(this.options),
       switchMap(options => merge(...options.map(o => o.selected))), //cancels previous subscribtion helps with memory leak
       takeUntil(this.unsubscribe$)
     ).subscribe(selectedOption => this.handleSelection(selectedOption));
@@ -112,7 +114,7 @@ export class SelectComponent implements AfterContentInit, OnDestroy {
     }
   }
 
-  private handleSelection(option: OptionComponent) {
+  private handleSelection(option: OptionComponent<T>) {
     if (option.value) {
       this.selectionModel.toggle(option.value);
       this.selectionChanged.emit(this.value);
@@ -121,11 +123,11 @@ export class SelectComponent implements AfterContentInit, OnDestroy {
     this.close();
   }
 
-  private highlightSelectedOptions(value: string | null): void {
+  private highlightSelectedOptions(value: SelectValue<T>): void {
     this.findOptionByValue(value)?.highlightAsSelected();
   }
 
-  private findOptionByValue(value: string | null): OptionComponent | undefined {
+  private findOptionByValue(value: SelectValue<T>): OptionComponent<T> | undefined {
     return this.options && this.options.find(o => o.value === value);
   }
 }

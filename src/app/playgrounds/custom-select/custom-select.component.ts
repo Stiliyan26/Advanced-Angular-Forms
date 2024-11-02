@@ -23,7 +23,7 @@ export class CustomSelectComponent implements OnInit {
     }, 5000);
   }
 
-  onSelectionChanged(value: string | null) {
+  onSelectionChanged(value: unknown) {
     console.log('Selected value: ', value);
   }
 }

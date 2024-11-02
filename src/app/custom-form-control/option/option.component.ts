@@ -8,10 +8,10 @@ import { Component, EventEmitter, HostBinding, HostListener, Input, OnInit, Outp
   templateUrl: './option.component.html',
   styleUrl: './option.component.scss'
 })
-export class OptionComponent implements OnInit {
+export class OptionComponent<T> implements OnInit {
 
   @Input()
-  value: string | null = null;
+  value: T | null = null;
 
   @Input()
   disabledReason = ''
@@ -21,7 +21,7 @@ export class OptionComponent implements OnInit {
   disabled = false;
 
   @Output()
-  selected = new EventEmitter<OptionComponent>();
+  selected = new EventEmitter<OptionComponent<T>>();
 
   @HostListener('click')
   protected select() { 
