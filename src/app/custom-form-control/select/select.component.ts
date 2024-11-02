@@ -42,6 +42,9 @@ export class SelectComponent<T> implements AfterContentInit, OnDestroy {
   label = '';
 
   @Input()
+  displayWith: ((value: T) => string | number ) | null = null;
+
+  @Input()
   set value(value: SelectValue<T>) {
     this.selectionModel.clear();
 
@@ -78,6 +81,14 @@ export class SelectComponent<T> implements AfterContentInit, OnDestroy {
   options!: QueryList<OptionComponent<T>>;
 
   isOpen = false;
+
+  protected get displayValue() {
+    if (this.displayWith && this.value) {
+      return this.displayWith(this.value);
+    }
+
+    return this.value;
+  }
 
   private unsubscribe$ = new Subject<void>();
 

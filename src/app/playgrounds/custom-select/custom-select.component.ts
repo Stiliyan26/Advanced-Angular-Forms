@@ -14,7 +14,8 @@ import { User } from '../../core/models/user';
 })
 export class CustomSelectComponent implements OnInit {
 
-  selectValue = 'niels';
+  selectValue = new User(2, 'Niels Bohr', 'niels', 'Denmark');
+
   users: User[] = [
     new User(1, 'Albert Einstein', 'albert', 'Germany/USA'),
     new User(2, 'Niels Bohr', 'niels', 'Denmark'),
@@ -26,7 +27,7 @@ export class CustomSelectComponent implements OnInit {
 
   ngOnInit(): void {
     setTimeout(() => {
-      this.selectValue = 'marie';
+      this.selectValue = new User(3, 'Marie Curie', 'marie', 'Poland/French');
 
       this.users = [
         new User(1, 'Albert Einstein', 'albert', 'Germany/USA'),
@@ -36,6 +37,10 @@ export class CustomSelectComponent implements OnInit {
       
       this.cd.markForCheck();
     }, 5000);
+  }
+
+  displayWithFn(user: User) {
+    return user.name;
   }
 
   onSelectionChanged(value: unknown) {
