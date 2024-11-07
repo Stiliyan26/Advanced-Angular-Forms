@@ -3,6 +3,7 @@ import {
   AfterContentInit,
   Attribute,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ContentChildren,
   ElementRef,
@@ -91,15 +92,20 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
 
   private selectionModel: SelectionModel<T>;
 
-  protected onChange: (newValue: SelectValue<T>) => void = () => {};
+  protected onChange: (newValue: SelectValue<T>) => void = () => { };
+  protected onTouched: () => void = () => { };
 
-  constructor(@Attribute('multiple') private multiple: string) {
+  constructor(
+    @Attribute('multiple') private multiple: string,
+    private cd: ChangeDetectorRef
+  ) {
     this.selectionModel = new SelectionModel<T>(coerceBooleanProperty(this.multiple));
   }
 
   writeValue(value: SelectValue<T>): void {
     this.setupValue(value);
     this.highlightSelectedOptions();
+    this.cd.markForCheck();
   }
 
   registerOnChange(fn: any): void {
@@ -107,9 +113,12 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
   }
 
   registerOnTouched(fn: any): void {
+    this.onTouched = fn;
   }
 
   setDisabledState?(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+    this.cd.markForCheck();
   }
 
   @Output()
@@ -124,6 +133,14 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
   @Output()
   readonly searchChanged = new EventEmitter<string>();
 
+  @HostListener('blur')
+  markAsTouched() {
+    if (!this.disabled && !this.isOpen) {
+      this.onTouched();
+      this.cd.markForCheck();
+    }
+  }
+
   @HostListener('click')
   open() {
     if (this.disabled) return;
@@ -137,10 +154,15 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
         }
       });
     }
+
+    this.cd.markForCheck();
   }
 
   close() {
     this.isOpen = false;
+    this.onTouched();
+
+    this.cd.markForCheck();
   }
   //Descendants instrcts to select the indirect options if the optionComponents is nestead in an element
   @ContentChildren(OptionComponent, { descendants: true })
@@ -151,6 +173,10 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
 
   @HostBinding('class.select-panel-open')
   isOpen = false;
+
+  @HostBinding('attr.tabIndex')
+  @Input()
+  tabIndex = 0;
 
   protected get displayValue() {
     if (this.displayWith && this.value) {
@@ -196,8 +222,8 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
     this.unsubscribe$.complete();
   }
 
-  clearSelection(e: Event) {
-    e.stopPropagation();
+  clearSelection(e?: Event) {
+    e?.stopPropagation();
 
     if (this.disabled) return;
 
@@ -205,6 +231,8 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
 
     this.selectionChanged.emit(this.value);
     this.onChange(this.value);
+
+    this.cd.markForCheck();
   }
 
   protected onPanelAnimationDone(event: AnimationEvent): void {

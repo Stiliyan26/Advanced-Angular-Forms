@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { SelectComponent, SelectValue } from '../../custom-form-control/select/select.component';
 import { OptionComponent } from '../../custom-form-control/option/option.component';
 import { User } from '../../core/models/user';
@@ -31,7 +31,14 @@ export class CustomSelectComponent implements OnInit {
 
   constructor(private cd: ChangeDetectorRef) { }
 
+  @ViewChild(SelectComponent)
+  select!: SelectComponent<User>;
+
   ngOnInit(): void {
+    setTimeout(() => {
+      this.select.open(); 
+    }, 3000);
+
     this.selectValue.valueChanges.subscribe(this.onSelectionChanged);
   }
 
