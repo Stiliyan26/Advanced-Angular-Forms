@@ -53,6 +53,11 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
   searchable = false;
 
   @Input()
+  @HostBinding('class.disabled')
+  disabled = false;
+
+
+  @Input()
   displayWith: ((value: T) => string | number) | null = null;
 
   @Input()
@@ -101,6 +106,8 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
 
   @HostListener('click')
   open() {
+    if (this.disabled) return;
+
     this.isOpen = true;
 
     if (this.searchable) {
@@ -171,6 +178,9 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
 
   clearSelection(e: Event) {
     e.stopPropagation();
+
+    if (this.disabled) return;
+
     this.selectionModel.clear();
 
     this.selectionChanged.emit(this.value);
@@ -190,6 +200,8 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
   }
 
   private handleSelection(option: OptionComponent<T>) {
+    if (this.disabled) return;
+
     if (option.value) {
       this.selectionModel.toggle(option.value);
       this.selectionChanged.emit(this.value);
