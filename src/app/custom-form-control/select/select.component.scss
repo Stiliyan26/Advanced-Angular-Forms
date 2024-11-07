@@ -16,6 +16,11 @@
       transform: scale(0.9);
     }
   }
+
+  &.select-panel-open {
+    position: relative;
+    z-index: 1001;
+  }
 }
 .label {
   font-size: 13px;
