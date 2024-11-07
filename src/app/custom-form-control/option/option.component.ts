@@ -1,6 +1,6 @@
 import { Highlightable } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostBinding, HostListener, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-option',
@@ -40,7 +40,10 @@ export class OptionComponent<T> implements OnInit, Highlightable {
   @HostBinding('class.active')
   protected isActive: boolean = false;
 
-  constructor(private cd: ChangeDetectorRef) { }
+  constructor(
+    private cd: ChangeDetectorRef,
+    private el: ElementRef<HTMLElement>
+  ) { }
 
   setActiveStyles(): void {
     this.isActive = true;
@@ -66,5 +69,9 @@ export class OptionComponent<T> implements OnInit, Highlightable {
   deselect() {
     this.isSelected = false;
     this.cd.markForCheck();
+   }
+
+   scrollIntoView(options?: ScrollIntoViewOptions) {
+    this.el.nativeElement.scrollIntoView(options);
    }
 }

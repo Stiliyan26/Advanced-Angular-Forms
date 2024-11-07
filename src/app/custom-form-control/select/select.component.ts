@@ -178,6 +178,10 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
     if ((e.key === "ArrowDown" || e.key === "ArrowUp") && this.isOpen) {
       this.listKeyManager.onKeydown(e);
     }
+
+    if (e.key === 'Enter' && this.isOpen && this.listKeyManager.activeItem) {
+      this.handleSelection(this.listKeyManager.activeItem);
+    }
   }
 
   //Descendants instrcts to select the indirect options if the optionComponents is nestead in an element
@@ -217,6 +221,15 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
 
   ngAfterContentInit(): void {
     this.listKeyManager = new ActiveDescendantKeyManager(this.options).withWrap();
+
+    this.listKeyManager.change
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(itemIndex => {
+        this.options.get(itemIndex)?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      });
 
     this.selectionModel.changed
       .pipe(takeUntil(this.unsubscribe$))

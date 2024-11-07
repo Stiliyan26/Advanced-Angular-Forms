@@ -64,7 +64,9 @@
   border: var(--color-text, #ccc) solid 2px;
   background-color: #fff;
   transform-origin: top;
-  min-height: 150px;
+  min-height: 45px;
+  max-height: 180px;
+  overflow: auto;
 }
 
 .select-search {
