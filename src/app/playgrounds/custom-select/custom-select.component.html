@@ -4,9 +4,7 @@
   [searchable]="true"
   [compareWith]="compareWithFn"
   [displayWith]="displayWithFn"
-  [value]="selectValue"
-  [disabled]="true"
-  (selectionChanged)="onSelectionChanged($event)"
+  [formControl]="selectValue"
   (closed)="onSearchChanged('')"
   (searchChanged)="onSearchChanged($event)">
   <app-option

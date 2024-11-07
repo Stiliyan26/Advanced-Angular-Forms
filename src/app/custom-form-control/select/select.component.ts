@@ -24,6 +24,7 @@ import { OptionComponent } from '../option/option.component';
 import { SelectionModel } from '@angular/cdk/collections';
 import { merge, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 
 export type SelectValue<T> = T | T[] | null;
@@ -42,9 +43,16 @@ export type SelectValue<T> = T | T[] | null;
       transition(':leave', [animate('420ms cubic-bezier(0.88,-0.7, 0.86, 0.85)')]),
     ])
   ],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: SelectComponent,
+      multi: true
+    }
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestroy {
+export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestroy, ControlValueAccessor {
 
   @Input()
   label = '';
@@ -56,7 +64,6 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
   @HostBinding('class.disabled')
   disabled = false;
 
-
   @Input()
   displayWith: ((value: T) => string | number) | null = null;
 
@@ -65,13 +72,9 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
 
   @Input()
   set value(value: SelectValue<T>) {
-    this.selectionModel.clear();
-
-    if (value) {
-      Array.isArray(value)
-        ? this.selectionModel.select(...value)
-        : this.selectionModel.select(value);
-    }
+    this.setupValue(value);
+    this.onChange(this.value);
+    this.highlightSelectedOptions();
   };
 
   get value() {
@@ -88,8 +91,25 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
 
   private selectionModel: SelectionModel<T>;
 
+  protected onChange: (newValue: SelectValue<T>) => void = () => {};
+
   constructor(@Attribute('multiple') private multiple: string) {
     this.selectionModel = new SelectionModel<T>(coerceBooleanProperty(this.multiple));
+  }
+
+  writeValue(value: SelectValue<T>): void {
+    this.setupValue(value);
+    this.highlightSelectedOptions();
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
   }
 
   @Output()
@@ -120,7 +140,7 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
   }
 
   close() {
-    this.isOpen = false;  
+    this.isOpen = false;
   }
   //Descendants instrcts to select the indirect options if the optionComponents is nestead in an element
   @ContentChildren(OptionComponent, { descendants: true })
@@ -184,6 +204,7 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
     this.selectionModel.clear();
 
     this.selectionChanged.emit(this.value);
+    this.onChange(this.value);
   }
 
   protected onPanelAnimationDone(event: AnimationEvent): void {
@@ -205,6 +226,7 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
     if (option.value) {
       this.selectionModel.toggle(option.value);
       this.selectionChanged.emit(this.value);
+      this.onChange(this.value);
     }
 
     if (!this.selectionModel.isMultipleSelection()) {
@@ -229,5 +251,15 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
 
   private findOptionByValue(value: T | null): OptionComponent<T> | undefined {
     return this.options && this.options.find(o => this.compareWith(o.value, value));
+  }
+
+  private setupValue(value: SelectValue<T>) {
+    this.selectionModel.clear();
+
+    if (value) {
+      Array.isArray(value)
+        ? this.selectionModel.select(...value)
+        : this.selectionModel.select(value);
+    }
   }
 }

@@ -3,21 +3,22 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { SelectComponent, SelectValue } from '../../custom-form-control/select/select.component';
 import { OptionComponent } from '../../custom-form-control/option/option.component';
 import { User } from '../../core/models/user';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-custom-select',
   standalone: true,
-  imports: [CommonModule, SelectComponent, OptionComponent],
+  imports: [CommonModule, SelectComponent, OptionComponent, ReactiveFormsModule],
   templateUrl: './custom-select.component.html',
   styleUrl: './custom-select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomSelectComponent implements OnInit {
 
-  selectValue: SelectValue<User> = [
+  selectValue: FormControl<SelectValue<User>> = new FormControl([
     new User(2, 'Niels Bohr', 'niels', 'Denmark'),
     new User(1, 'Albert Einstein', 'albert', 'Germany/USA'),
-  ];
+  ]);
 
   users: User[] = [
     new User(1, 'Albert Einstein', 'albert', 'Germany/USA'),
@@ -31,6 +32,7 @@ export class CustomSelectComponent implements OnInit {
   constructor(private cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
+    this.selectValue.valueChanges.subscribe(this.onSelectionChanged);
   }
 
   displayWithFn(user: User) {
