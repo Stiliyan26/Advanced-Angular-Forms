@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { SelectComponent } from '../../custom-form-control/select/select.component';
+import { SelectComponent, SelectValue } from '../../custom-form-control/select/select.component';
 import { OptionComponent } from '../../custom-form-control/option/option.component';
 import { User } from '../../core/models/user';
 
@@ -14,7 +14,10 @@ import { User } from '../../core/models/user';
 })
 export class CustomSelectComponent implements OnInit {
 
-  selectValue = new User(2, 'Niels Bohr', 'niels', 'Denmark');
+  selectValue: SelectValue<User> = [
+    new User(2, 'Niels Bohr', 'niels', 'Denmark'),
+    new User(1, 'Albert Einstein', 'albert', 'Germany/USA'),
+  ];
 
   users: User[] = [
     new User(1, 'Albert Einstein', 'albert', 'Germany/USA'),

@@ -1,18 +1,18 @@
 import { CommonModule } from '@angular/common';
 import {
   AfterContentInit,
+  Attribute,
   ChangeDetectionStrategy,
   Component,
   ContentChildren,
   EventEmitter,
   HostListener,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
   Output,
   QueryList,
-  SimpleChange,
   SimpleChanges
 } from '@angular/core';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -20,9 +20,10 @@ import { animate, AnimationEvent, state, style, transition, trigger } from '@ang
 import { OptionComponent } from '../option/option.component';
 import { SelectionModel } from '@angular/cdk/collections';
 import { merge, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 
-export type SelectValue<T> = T | null;
+export type SelectValue<T> = T | T[] | null;
 
 @Component({
   selector: 'app-select',
@@ -56,15 +57,29 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
     this.selectionModel.clear();
 
     if (value) {
-      this.selectionModel.select(value);
+      Array.isArray(value)
+        ? this.selectionModel.select(...value)
+        : this.selectionModel.select(value);
     }
   };
 
   get value() {
-    return this.selectionModel.selected[0] || null;
+    if (this.selectionModel.isEmpty()) {
+      return null;
+    }
+
+    if (this.selectionModel.isMultipleSelection()) {
+      return this.selectionModel.selected;
+    }
+    
+    return this.selectionModel.selected[0];
   }
 
-  private selectionModel = new SelectionModel<T>();
+  private selectionModel: SelectionModel<T>;
+
+  constructor(@Attribute('multiple') private multiple: string) {
+    this.selectionModel = new SelectionModel<T>(coerceBooleanProperty(this.multiple));
+  }
 
   @Output()
   readonly opened = new EventEmitter<void>();
@@ -91,17 +106,16 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
 
   protected get displayValue() {
     if (this.displayWith && this.value) {
-      return this.displayWith(this.value);
+
+      return Array.isArray(this.value)
+        ? this.value.map(this.displayWith)
+        : this.displayWith(this.value);
     }
 
     return this.value;
   }
 
-  private optionMap = new Map<T | null, OptionComponent<T>>();
-
   private unsubscribe$ = new Subject<void>();
-
-  constructor() { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['compareWith']) {
@@ -114,15 +128,14 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
     this.selectionModel.changed
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(values => {
-        values.removed.forEach(rv => this.optionMap.get(rv)?.deselect());
-        console.log("Removed values: ", values);
+        values.removed.forEach(rv => this.findOptionByValue(rv)?.deselect());
+        console.log(values);
 
-        values.added.forEach(av => this.optionMap.get(av)?.highlightAsSelected());
+        values.added.forEach(av => this.findOptionByValue(av)?.highlightAsSelected());
       });
 
     this.options.changes.pipe(
       startWith<QueryList<OptionComponent<T>>>(this.options),
-      tap(() => this.refreshOptionsMap()),
       tap(() => queueMicrotask(() => this.highlightSelectedOptions())),
       //Listen to all event emitters
       switchMap(options => merge(...options.map(o => o.selected))), //cancels previous subscribtion helps with memory leak
@@ -150,7 +163,9 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
       this.selectionChanged.emit(this.value);
     }
 
-    this.close();
+    if (!this.selectionModel.isMultipleSelection()) {
+      this.close();
+    }
   }
 
   private highlightSelectedOptions(): void {
@@ -169,15 +184,6 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
   }
 
   private findOptionByValue(value: T | null): OptionComponent<T> | undefined {
-    if (this.optionMap.has(value)) {
-      return this.optionMap.get(value);
-    }
-
     return this.options && this.options.find(o => this.compareWith(o.value, value));
-  }
-
-  private refreshOptionsMap() {
-    this.optionMap.clear();
-    this.optionMap.forEach(o => this.optionMap.set(o.value, o));
   }
 }
