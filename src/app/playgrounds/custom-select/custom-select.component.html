@@ -1,12 +1,15 @@
 <app-select
   label="Pick the User"
   multiple="true"
-  (selectionChanged)="onSelectionChanged($event)"
+  [searchable]="true"
   [compareWith]="compareWithFn"
   [displayWith]="displayWithFn"
-  [value]="selectValue">
+  [value]="selectValue"
+  (selectionChanged)="onSelectionChanged($event)"
+  (closed)="onSearchChanged('')"
+  (searchChanged)="onSearchChanged($event)">
   <app-option
-    *ngFor="let user of users"
+    *ngFor="let user of filteredUsers"
     [value]="user">
     {{user.name}}
   </app-option>

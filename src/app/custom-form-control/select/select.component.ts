@@ -5,6 +5,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ContentChildren,
+  ElementRef,
   EventEmitter,
   HostBinding,
   HostListener,
@@ -14,7 +15,8 @@ import {
   OnDestroy,
   Output,
   QueryList,
-  SimpleChanges
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { animate, AnimationEvent, state, style, transition, trigger } from '@angular/animations';
@@ -48,6 +50,9 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
   label = '';
 
   @Input()
+  searchable = false;
+
+  @Input()
   displayWith: ((value: T) => string | number) | null = null;
 
   @Input()
@@ -72,7 +77,7 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
     if (this.selectionModel.isMultipleSelection()) {
       return this.selectionModel.selected;
     }
-    
+
     return this.selectionModel.selected[0];
   }
 
@@ -91,17 +96,31 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
   @Output()
   readonly closed = new EventEmitter<void>();
 
+  @Output()
+  readonly searchChanged = new EventEmitter<string>();
+
   @HostListener('click')
   open() {
     this.isOpen = true;
+
+    if (this.searchable) {
+      requestAnimationFrame(() => {
+        if (this.searchInputEl?.nativeElement) {
+          this.searchInputEl.nativeElement.focus();
+        }
+      });
+    }
   }
 
   close() {
-    this.isOpen = false;
+    this.isOpen = false;  
   }
   //Descendants instrcts to select the indirect options if the optionComponents is nestead in an element
   @ContentChildren(OptionComponent, { descendants: true })
   options!: QueryList<OptionComponent<T>>;
+
+  @ViewChild('input')
+  searchInputEl!: ElementRef<HTMLInputElement>;
 
   @HostBinding('class.select-panel-open')
   isOpen = false;
@@ -157,13 +176,17 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
     this.selectionChanged.emit(this.value);
   }
 
-  onPanelAnimationDone(event: AnimationEvent): void {
+  protected onPanelAnimationDone(event: AnimationEvent): void {
     if (event.fromState === 'void' && event.toState === null && this.isOpen) {
       this.opened.emit();
     }
     if (event.fromState === null && event.toState === 'void' && !this.isOpen) {
       this.closed.emit();
     }
+  }
+
+  protected onHandleInput(e: Event) {
+    this.searchChanged.emit((e.target as HTMLInputElement).value);
   }
 
   private handleSelection(option: OptionComponent<T>) {

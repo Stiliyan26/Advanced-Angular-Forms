@@ -9,9 +9,11 @@
   height: 100%;
   border-radius: var(--border-radius, 10px);
   min-width: 250px;
+
   &:hover {
     cursor: pointer;
     background-color: var(--color-background, #eceff1);
+
     .selected-value {
       transform: scale(0.9);
     }
@@ -22,6 +24,7 @@
     z-index: 1001;
   }
 }
+
 .label {
   font-size: 13px;
   font-weight: 800;
@@ -41,6 +44,7 @@
   transition: transform 0.2s;
   transform-origin: left;
   width: 100%;
+
   &.empty {
     opacity: 0.6;
   }
@@ -55,6 +59,13 @@
   background-color: #fff;
   transform-origin: top;
   min-height: 150px;
+}
+
+.select-search {
+  border: none;
+  padding: 0;
+  background: transparent;
+  outline: none;
 }
 
 .clear-button {

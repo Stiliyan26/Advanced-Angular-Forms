@@ -26,20 +26,11 @@ export class CustomSelectComponent implements OnInit {
     new User(4, 'Isaac Newton', 'isaac', 'United Kingdom', true)
   ];
 
+  filteredUsers = this.users;
+
   constructor(private cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.selectValue = new User(3, 'Marie Curie', 'marie', 'Poland/French');
-
-      this.users = [
-        new User(1, 'Albert Einstein', 'albert', 'Germany/USA'),
-        new User(2, 'Niels Bohr', 'niels', 'Denmark'),
-        new User(3, 'Marie Curie', 'marie', 'Poland/French'),
-      ];
-      
-      this.cd.markForCheck();
-    }, 5000);
   }
 
   displayWithFn(user: User) {
@@ -52,5 +43,12 @@ export class CustomSelectComponent implements OnInit {
 
   onSelectionChanged(value: unknown) {
     console.log('Selected value: ', value);
+  }
+
+  onSearchChanged(queryString: string) {
+
+    this.filteredUsers = this.users.filter(user => 
+      user.name.toLowerCase().startsWith(queryString.toLowerCase())
+    );
   }
 }
