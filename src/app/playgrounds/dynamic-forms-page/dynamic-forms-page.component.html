@@ -1,0 +1,15 @@
+<div class="action-buttons">
+  <button (click)="formLoadingTrigger.next('user')" type="button">
+    Load User Form
+  </button>
+
+  <button (click)="formLoadingTrigger.next('company')" type="button">
+    Load Company Form
+  </button>
+</div>
+
+<div *ngIf="formConfig$ | async as formConfig" class="dynamic-form-container">
+  <form action>
+    <pre>{{ formConfig | json }}</pre>
+  </form>
+</div>

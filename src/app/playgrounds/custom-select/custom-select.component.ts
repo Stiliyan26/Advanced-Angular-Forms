@@ -10,7 +10,10 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, SelectComponent, OptionComponent, ReactiveFormsModule],
   templateUrl: './custom-select.component.html',
-  styleUrl: './custom-select.component.scss',
+  styleUrls: [
+    '../common-form.scss',
+    './custom-select.component.scss',
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomSelectComponent implements OnInit {
