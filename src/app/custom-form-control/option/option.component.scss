@@ -30,6 +30,10 @@
     pointer-events: none;
     border: var(--color-text-light) dashed;
   }
+
+  &.active {
+    border: var(--color-text-light, #bbcdd5) 1px dashed;
+  }
 }
 
 .option-content {

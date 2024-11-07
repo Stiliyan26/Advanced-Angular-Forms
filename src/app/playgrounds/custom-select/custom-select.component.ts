@@ -35,9 +35,9 @@ export class CustomSelectComponent implements OnInit {
   select!: SelectComponent<User>;
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.select.open(); 
-    }, 3000);
+    // setTimeout(() => {
+    //   this.select.open(); 
+    // }, 3000);
 
     this.selectValue.valueChanges.subscribe(this.onSelectionChanged);
   }

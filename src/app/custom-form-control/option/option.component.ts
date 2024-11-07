@@ -1,3 +1,4 @@
+import { Highlightable } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostBinding, HostListener, Input, OnInit, Output } from '@angular/core';
 
@@ -9,7 +10,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Ho
   styleUrl: './option.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OptionComponent<T> implements OnInit {
+export class OptionComponent<T> implements OnInit, Highlightable {
 
   @Input()
   value: T | null = null;
@@ -36,7 +37,24 @@ export class OptionComponent<T> implements OnInit {
   @HostBinding('class.selected')
   protected isSelected: boolean = false;
 
+  @HostBinding('class.active')
+  protected isActive: boolean = false;
+
   constructor(private cd: ChangeDetectorRef) { }
+
+  setActiveStyles(): void {
+    this.isActive = true;
+    this.cd.markForCheck();
+  }
+
+  setInactiveStyles(): void {
+    this.isActive = false;
+    this.cd.markForCheck();
+  }
+
+  getLabel?(): string {
+    throw new Error('Method not implemented.');
+  }
 
   ngOnInit(): void { }
 

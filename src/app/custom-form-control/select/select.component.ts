@@ -26,6 +26,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { merge, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ActiveDescendantKeyManager } from '@angular/cdk/a11y';
 
 
 export type SelectValue<T> = T | T[] | null;
@@ -97,7 +98,8 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
 
   constructor(
     @Attribute('multiple') private multiple: string,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private hostEl: ElementRef
   ) {
     this.selectionModel = new SelectionModel<T>(coerceBooleanProperty(this.multiple));
   }
@@ -161,9 +163,23 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
   close() {
     this.isOpen = false;
     this.onTouched();
+    this.hostEl.nativeElement.focus();
 
     this.cd.markForCheck();
   }
+
+  @HostListener("keydown", ["$event"])
+  protected onKeyDown(e: KeyboardEvent) {
+    if (e.key === "ArrowDown" && !this.isOpen) {
+      this.open();
+      return;
+    }
+
+    if ((e.key === "ArrowDown" || e.key === "ArrowUp") && this.isOpen) {
+      this.listKeyManager.onKeydown(e);
+    }
+  }
+
   //Descendants instrcts to select the indirect options if the optionComponents is nestead in an element
   @ContentChildren(OptionComponent, { descendants: true })
   options!: QueryList<OptionComponent<T>>;
@@ -190,6 +206,7 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
   }
 
   private unsubscribe$ = new Subject<void>();
+  private listKeyManager!: ActiveDescendantKeyManager<OptionComponent<T>>
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['compareWith']) {
@@ -199,6 +216,8 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
   }
 
   ngAfterContentInit(): void {
+    this.listKeyManager = new ActiveDescendantKeyManager(this.options).withWrap();
+
     this.selectionModel.changed
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(values => {
