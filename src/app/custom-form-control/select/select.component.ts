@@ -148,6 +148,13 @@ export class SelectComponent<T> implements OnChanges, AfterContentInit, OnDestro
     this.unsubscribe$.complete();
   }
 
+  clearSelection(e: Event) {
+    e.stopPropagation();
+    this.selectionModel.clear();
+
+    this.selectionChanged.emit(this.value);
+  }
+
   onPanelAnimationDone(event: AnimationEvent): void {
     if (event.fromState === 'void' && event.toState === null && this.isOpen) {
       this.opened.emit();
