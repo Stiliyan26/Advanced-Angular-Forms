@@ -5,17 +5,25 @@
       "controlType": "input",
       "type": "text",
       "label": "Full Name",
-      "value": ""
+      "value": "",
+      "validators": {
+        "required": true,
+        "minlength": 2,
+        "banWords": ["Test", "Dummy"]
+      }
     },
     "email": {
       "controlType": "input",
       "type": "email",
       "label": "Email",
-      "value": ""
+      "value": "",
+      "validators": {
+        "email": true
+      }
     },
     "role": {
       "controlType": "select",
-      "type": "User Role",
+      "label": "User Role",
       "value": "",
       "options": [
         {

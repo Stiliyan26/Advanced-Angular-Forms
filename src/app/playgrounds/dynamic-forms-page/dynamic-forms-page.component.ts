@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable, Subject, switchMap, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { DynamicFormConfig } from './models/dynamic-form.model';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { DynamicControl, DynamicFormConfig } from './models/dynamic-form.model';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { banWords } from '../reactive-forms/reactive-forms-page/validators/ban-words.validator';
 
 @Component({
   selector: 'app-dynamic-forms-page',
@@ -34,7 +35,7 @@ export class DynamicFormsPageComponent implements OnInit {
 
   protected onSubmit() {
     console.log('Submitted data: ', this.form.value);
-    
+
     this.form.reset();
   }
 
@@ -43,9 +44,34 @@ export class DynamicFormsPageComponent implements OnInit {
 
     Object.keys(controls)
       .forEach(key => {
-        this.form.addControl(key, new FormControl(controls[key].value));
+        const validators = this.resolveValidators(controls[key])
+        this.form.addControl(key, new FormControl(controls[key].value, validators));
       });
 
     console.log(this.form.value);
+  }
+
+  private resolveValidators({ validators = { } }: DynamicControl) {
+    return Object.keys(validators).map(validatorKey => {
+      const validatorValue = validators[validatorKey];
+
+      if (validatorKey === 'required') {
+        return Validators.required;
+      }
+
+      if (validatorKey === 'email') {
+        return Validators.email;
+      }
+
+      if (validatorKey === 'minlength' && typeof validatorValue === 'number') {
+        return Validators.minLength(validatorValue);
+      }
+
+      if (validatorKey === 'banWords' && Array.isArray(validatorValue)) {
+        return banWords(validatorValue);
+      }
+      
+      return Validators.nullValidator;
+    });
   }
 }
