@@ -6,11 +6,12 @@ import { DynamicControl, DynamicFormConfig } from '../models/dynamic-form.model'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { banWords } from '../../reactive-forms/reactive-forms-page/validators/ban-words.validator';
 import { DynamicControlResolver } from '../service/dynamic-control-resolver.service';
+import { ControlInjectorPipe } from '../pipe/control-injector.pipe';
 
 @Component({
   selector: 'app-dynamic-forms-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ControlInjectorPipe],
   templateUrl: './dynamic-forms-page.component.html',
   styleUrls: [
     '../../common-form.scss',
