@@ -38,7 +38,7 @@ export const routes: Routes = [
     path: 'dynamic-forms',
     title: 'Dynamic forms Playground',
     loadComponent:
-      () => import('./playgrounds/dynamic-forms-page/dynamic-forms-page.component')
+      () => import('./playgrounds/dynamic-form/dynamic-forms-page/dynamic-forms-page.component')
         .then(m => m.DynamicFormsPageComponent)   
   }
 ];

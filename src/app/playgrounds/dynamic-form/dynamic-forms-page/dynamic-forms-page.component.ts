@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable, Subject, switchMap, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { DynamicControl, DynamicFormConfig } from './models/dynamic-form.model';
+import { DynamicControl, DynamicFormConfig } from '../models/dynamic-form.model';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { banWords } from '../reactive-forms/reactive-forms-page/validators/ban-words.validator';
+import { banWords } from '../../reactive-forms/reactive-forms-page/validators/ban-words.validator';
+import { DynamicControlResolver } from '../service/dynamic-control-resolver.service';
 
 @Component({
   selector: 'app-dynamic-forms-page',
@@ -12,7 +13,7 @@ import { banWords } from '../reactive-forms/reactive-forms-page/validators/ban-w
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './dynamic-forms-page.component.html',
   styleUrls: [
-    '../common-form.scss',
+    '../../common-form.scss',
     './dynamic-forms-page.component.scss',
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -24,7 +25,8 @@ export class DynamicFormsPageComponent implements OnInit {
   protected formLoadingTrigger = new Subject<'user' | 'company'>();
   protected formConfig$!: Observable<DynamicFormConfig>;
 
-  constructor(private http: HttpClient) { }
+  private http = inject(HttpClient);
+  protected dynamicControlResolver = inject(DynamicControlResolver);
 
   ngOnInit(): void {
     this.formConfig$ = this.formLoadingTrigger.pipe(
