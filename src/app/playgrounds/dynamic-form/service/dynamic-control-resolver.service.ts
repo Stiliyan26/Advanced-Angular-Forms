@@ -2,8 +2,9 @@ import { T } from '@angular/cdk/keycodes';
 import { Injectable, Type } from '@angular/core';
 
 import { DynamicControl } from '../models/dynamic-form.model';
-import { DynamicInputComponent } from '../dynamic-input/dynamic-input.component';
-import { DynamicSelectComponent } from '../dynamic-select/dynamic-select.component';
+
+import { DynamicInputComponent } from '../dynamic-controls/dynamic-input.component';
+import { DynamicSelectComponent } from '../dynamic-controls/dynamic-select.component';
 
 
 type DynamicControlMap = {
