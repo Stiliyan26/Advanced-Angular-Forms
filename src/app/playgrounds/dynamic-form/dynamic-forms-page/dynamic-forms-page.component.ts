@@ -27,7 +27,7 @@ export class DynamicFormsPageComponent implements OnInit {
   protected formConfig$!: Observable<DynamicFormConfig>;
 
   private http = inject(HttpClient);
-  protected dynamicControlResolver = inject(DynamicControlResolver);
+  protected controlResolver = inject(DynamicControlResolver);
 
   ngOnInit(): void {
     this.formConfig$ = this.formLoadingTrigger.pipe(
@@ -46,15 +46,39 @@ export class DynamicFormsPageComponent implements OnInit {
     this.form = new FormGroup({});
 
     Object.keys(controls)
-      .forEach(key => {
-        const validators = this.resolveValidators(controls[key])
-        this.form.addControl(key, new FormControl(controls[key].value, validators));
-      });
+      .forEach(key => this.buildControls(
+        key,
+        controls[key],
+        this.form
+      ));
 
     console.log(this.form.value);
   }
 
-  private resolveValidators({ validators = { } }: DynamicControl) {
+  private buildGroup(controlKey: string, controls: DynamicControl['controls'], parentFromGroup: FormGroup) {
+    if (!controls) return;
+
+    const nestedFormGroup = new FormGroup({});
+
+    Object.keys(controls)
+      .forEach(key => this.buildControls(key, controls[key], nestedFormGroup));
+
+    parentFromGroup.addControl(controlKey, nestedFormGroup);
+  }
+
+
+  
+  private buildControls(controlKey: string, config: DynamicControl, fromGroup: FormGroup) {
+    if (config.controlType === 'group') {
+      this.buildGroup(controlKey, config.controls, fromGroup);
+      return
+    }
+
+    const validators = this.resolveValidators(config)
+    fromGroup.addControl(controlKey, new FormControl(config.value, validators));
+  }
+
+  private resolveValidators({ validators = {} }: DynamicControl) {
     return (Object.keys(validators) as Array<keyof typeof validators>).map(validatorKey => {
       const validatorValue = validators[validatorKey];
 
@@ -77,7 +101,7 @@ export class DynamicFormsPageComponent implements OnInit {
       if (validatorKey === 'banWords' && Array.isArray(validatorValue)) {
         return banWords(validatorValue);
       }
-      
+
       return Validators.nullValidator;
     });
   }

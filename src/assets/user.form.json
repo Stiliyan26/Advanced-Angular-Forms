@@ -40,6 +40,30 @@
         }
       ]
     },
+    "socialProfiles": {
+      "controlType": "group",
+      "label": "Links to Social Profiles",
+      "controls": {
+        "youtube": {
+          "controlType": "input",
+          "label": "Youtube",
+          "value": null,
+          "type": "text"
+        },
+        "twitter": {
+          "controlType": "input",
+          "label": "Twitter",
+          "value": null,
+          "type": "text"
+        },
+        "instagram": {
+          "controlType": "input",
+          "label": "Instagram",
+          "value": null,
+          "type": "text"
+        }
+      }
+    },
     "terms": {
       "controlType": "checkbox",
       "label": "Terms & Conditions were accepted",

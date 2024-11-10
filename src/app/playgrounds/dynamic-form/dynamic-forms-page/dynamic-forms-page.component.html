@@ -11,13 +11,13 @@
 <div *ngIf="formConfig$ | async as formConfig" class="dynamic-form-container">
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <h3 class="form-heading">{{formConfig.description}}</h3>
-
+    
     <div
       *ngFor="let control of formConfig.controls | keyvalue"
       class="form-field">
 
       <ng-container
-        [ngComponentOutlet]="dynamicControlResolver.resolve(control.value.controlType)"
+        [ngComponentOutlet]="controlResolver.resolve(control.value.controlType)"
         [ngComponentOutletInjector]="control.key | controlInjector:control.value">
       </ng-container>
 

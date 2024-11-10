@@ -6,6 +6,7 @@ import { DynamicControl } from '../models/dynamic-form.model';
 import { DynamicInputComponent } from '../dynamic-controls/dynamic-input.component';
 import { DynamicSelectComponent } from '../dynamic-controls/dynamic-select.component';
 import { DynamicCheckboxComponent } from '../dynamic-controls/dynamic-checkbox.component';
+import { DynamicGroupComponent } from '../dynamic-controls/dynamic-group.component';
 
 
 type DynamicControlMap = {
@@ -20,7 +21,8 @@ export class DynamicControlResolver {
   private controlComponent: DynamicControlMap = {
     input: DynamicInputComponent,
     select: DynamicSelectComponent,
-    checkbox: DynamicCheckboxComponent
+    checkbox: DynamicCheckboxComponent,
+    group: DynamicGroupComponent
   }
 
   resolve(controlType: keyof DynamicControlMap) {
