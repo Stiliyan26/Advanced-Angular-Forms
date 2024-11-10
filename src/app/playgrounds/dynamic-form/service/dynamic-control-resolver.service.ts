@@ -1,16 +1,10 @@
-import { T } from '@angular/cdk/keycodes';
 import { Injectable, Type } from '@angular/core';
 
 import { DynamicControl } from '../models/dynamic-form.model';
-
-import { DynamicInputComponent } from '../dynamic-controls/dynamic-input.component';
-import { DynamicSelectComponent } from '../dynamic-controls/dynamic-select.component';
-import { DynamicCheckboxComponent } from '../dynamic-controls/dynamic-checkbox.component';
-import { DynamicGroupComponent } from '../dynamic-controls/dynamic-group.component';
-
+import { from, of, tap } from 'rxjs';
 
 type DynamicControlMap = {
-  [T in DynamicControl['controlType']]: Type<any>;
+  [T in DynamicControl['controlType']]: () => Promise<Type<any>>;
 };
 
 @Injectable({
@@ -18,14 +12,25 @@ type DynamicControlMap = {
 })
 export class DynamicControlResolver {
 
-  private controlComponent: DynamicControlMap = {
-    input: DynamicInputComponent,
-    select: DynamicSelectComponent,
-    checkbox: DynamicCheckboxComponent,
-    group: DynamicGroupComponent
+  private lazyControlComponents: DynamicControlMap = {
+    input: () => import('../dynamic-controls/dynamic-input.component').then(c => c.DynamicInputComponent),
+    select: () => import('../dynamic-controls/dynamic-select.component').then(c => c.DynamicSelectComponent),
+    checkbox: () => import('../dynamic-controls/dynamic-checkbox.component').then(c => c.DynamicCheckboxComponent),
+    group: () => import('../dynamic-controls/dynamic-group.component').then(c => c.DynamicGroupComponent)
   }
 
+  private loadedControlComponents = new Map<string, Type<any>>();
+
   resolve(controlType: keyof DynamicControlMap) {
-    return this.controlComponent[controlType];
+    const loadedComponent = this.loadedControlComponents.get(controlType);
+
+    if (loadedComponent) {
+      return of(loadedComponent);
+    }
+
+    return from(this.lazyControlComponents[controlType]())
+      .pipe(
+        tap(comp => this.loadedControlComponents.set(controlType, comp))
+      );
   }
 } 

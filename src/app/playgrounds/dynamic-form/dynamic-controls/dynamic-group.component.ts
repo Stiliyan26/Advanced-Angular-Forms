@@ -18,7 +18,7 @@ import { DynamicControlResolver } from '../service/dynamic-control-resolver.serv
 
         <ng-container *ngFor="let control of control.config.controls | keyvalue">
           <ng-container
-            [ngComponentOutlet]="controlResolver.resolve(control.value.controlType)"
+            [ngComponentOutlet]="controlResolver.resolve(control.value.controlType) | async"
             [ngComponentOutletInjector]="control.key | controlInjector:control.value">
           </ng-container>
         </ng-container>

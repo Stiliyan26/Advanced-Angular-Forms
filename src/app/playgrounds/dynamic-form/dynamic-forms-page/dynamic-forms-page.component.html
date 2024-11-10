@@ -15,7 +15,7 @@
     <ng-container *ngFor="let control of formConfig.controls | keyvalue">
 
       <ng-container
-        [ngComponentOutlet]="controlResolver.resolve(control.value.controlType)"
+        [ngComponentOutlet]="controlResolver.resolve(control.value.controlType) | async"
         [ngComponentOutletInjector]="control.key | controlInjector:control.value">
       </ng-container>
 
