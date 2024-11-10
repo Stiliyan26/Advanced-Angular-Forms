@@ -66,6 +66,10 @@ export class DynamicFormsPageComponent implements OnInit {
         return Validators.email;
       }
 
+      if (validatorKey === 'requiredTrue') {
+        return Validators.requiredTrue;
+      }
+
       if (validatorKey === 'minLength' && typeof validatorValue === 'number') {
         return Validators.minLength(validatorValue);
       }

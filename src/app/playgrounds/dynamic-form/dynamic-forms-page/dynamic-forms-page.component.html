@@ -15,7 +15,6 @@
     <div
       *ngFor="let control of formConfig.controls | keyvalue"
       class="form-field">
-      <label [for]="control.key">{{control.value.label}}</label>
 
       <ng-container
         [ngComponentOutlet]="dynamicControlResolver.resolve(control.value.controlType)"
