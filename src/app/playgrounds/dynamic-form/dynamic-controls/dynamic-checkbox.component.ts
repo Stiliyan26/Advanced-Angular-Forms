@@ -2,14 +2,16 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { BaseDynamicControl } from './base-dynamic-control';
+import { BaseDynamicControl, dynamicControlProvider } from './base-dynamic-control';
 
 @Component({
   selector: 'app-dynamic-checkbox',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
+  viewProviders: [
+    dynamicControlProvider
+  ],
   template: `
-  <ng-container [formGroup]="formGroup">
     <input 
       [formControlName]="control.controlKey"
       type="checkbox"
@@ -19,7 +21,6 @@ import { BaseDynamicControl } from './base-dynamic-control';
     <label [for]="control.controlKey">
       {{control.config.label}}
     </label>
-  </ng-container>
   `,
   styles: [`
     :host {

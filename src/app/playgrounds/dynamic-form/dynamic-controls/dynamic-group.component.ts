@@ -2,7 +2,7 @@ import { Component, HostBinding, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { BaseDynamicControl } from './base-dynamic-control';
+import { BaseDynamicControl, dynamicControlProvider } from './base-dynamic-control';
 import { ControlInjectorPipe } from '../pipe/control-injector.pipe';
 import { DynamicControlResolver } from '../service/dynamic-control-resolver.service';
 
@@ -11,19 +11,20 @@ import { DynamicControlResolver } from '../service/dynamic-control-resolver.serv
   selector: 'app-dynamic-group',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ControlInjectorPipe],
+  viewProviders: [
+    dynamicControlProvider
+  ],
   template: `
-    <ng-container [formGroup]="formGroup">
-      <fieldset [formGroupName]="control.controlKey">
-        <legend>{{control.config.label}}</legend>
+    <fieldset [formGroupName]="control.controlKey">
+      <legend>{{control.config.label}}</legend>
 
-        <ng-container *ngFor="let control of control.config.controls | keyvalue">
-          <ng-container
-            [ngComponentOutlet]="controlResolver.resolve(control.value.controlType) | async"
-            [ngComponentOutletInjector]="control.key | controlInjector:control.value">
-          </ng-container>
+      <ng-container *ngFor="let control of control.config.controls | keyvalue">
+        <ng-container
+          [ngComponentOutlet]="controlResolver.resolve(control.value.controlType) | async"
+          [ngComponentOutletInjector]="control.key | controlInjector:control.value">
         </ng-container>
-      </fieldset>
-    </ng-container>
+      </ng-container>
+    </fieldset>
   `,
   styles: ``
 })
