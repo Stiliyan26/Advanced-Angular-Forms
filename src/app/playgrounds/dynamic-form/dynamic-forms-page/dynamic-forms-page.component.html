@@ -12,7 +12,7 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <h3 class="form-heading">{{formConfig.description}}</h3>
 
-    <ng-container *ngFor="let control of formConfig.controls | keyvalue">
+    <ng-container *ngFor="let control of formConfig.controls | keyvalue: comparatorFn">
 
       <ng-container
         [ngComponentOutlet]="controlResolver.resolve(control.value.controlType) | async"

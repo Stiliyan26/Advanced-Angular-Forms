@@ -2,7 +2,7 @@ import { Component, HostBinding, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { BaseDynamicControl, dynamicControlProvider } from './base-dynamic-control';
+import { BaseDynamicControl, comparatorFn, dynamicControlProvider } from './base-dynamic-control';
 import { ControlInjectorPipe } from '../pipe/control-injector.pipe';
 import { DynamicControlResolver } from '../service/dynamic-control-resolver.service';
 
@@ -18,7 +18,7 @@ import { DynamicControlResolver } from '../service/dynamic-control-resolver.serv
     <fieldset [formGroupName]="control.controlKey">
       <legend>{{control.config.label}}</legend>
 
-      <ng-container *ngFor="let control of control.config.controls | keyvalue">
+      <ng-container *ngFor="let control of control.config.controls | keyvalue: comparatorFn">
         <ng-container
           [ngComponentOutlet]="controlResolver.resolve(control.value.controlType) | async"
           [ngComponentOutletInjector]="control.key | controlInjector:control.value">
@@ -30,6 +30,8 @@ import { DynamicControlResolver } from '../service/dynamic-control-resolver.serv
 })
 export class DynamicGroupComponent extends BaseDynamicControl {
   
+  protected comparatorFn = comparatorFn;
+
   @HostBinding('class')
   override hostClass = '';
 

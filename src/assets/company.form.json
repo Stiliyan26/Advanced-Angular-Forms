@@ -5,18 +5,21 @@
       "controlType": "input",
       "type": "text",
       "label": "Company Name",
-      "value": ""
+      "value": "",
+      "order": 0
     },
     "phone": {
       "controlType": "input",
       "type": "tel",
       "label": "Phone Number",
-      "value": ""
+      "value": "",
+      "order": 1
     },
     "size": {
       "controlType": "select",
       "label": "Company Size",
       "value": "",
+      "order": 2,
       "options": [
         {
           "label": "Up to 50 employees",

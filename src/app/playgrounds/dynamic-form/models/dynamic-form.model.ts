@@ -12,6 +12,7 @@ export interface DynamicControl<T = string> {
   controlType: 'input' | 'select' | 'checkbox' | 'group';
   type?: string;
   label: string;
+  order: number;
   value: T | null;
   options?: DynamicOptions[];
   controls?: DynamicFormConfig['controls'],

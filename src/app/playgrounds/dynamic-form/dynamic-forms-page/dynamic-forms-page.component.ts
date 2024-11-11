@@ -7,6 +7,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { banWords } from '../../reactive-forms/reactive-forms-page/validators/ban-words.validator';
 import { DynamicControlResolver } from '../service/dynamic-control-resolver.service';
 import { ControlInjectorPipe } from '../pipe/control-injector.pipe';
+import { comparatorFn } from '../dynamic-controls/base-dynamic-control';
 
 @Component({
   selector: 'app-dynamic-forms-page',
@@ -23,6 +24,8 @@ export class DynamicFormsPageComponent implements OnInit {
 
   form!: FormGroup;
 
+  protected comparatorFn = comparatorFn;
+  
   protected formLoadingTrigger = new Subject<'user' | 'company'>();
   protected formConfig$!: Observable<DynamicFormConfig>;
 
@@ -67,14 +70,14 @@ export class DynamicFormsPageComponent implements OnInit {
   }
 
 
-  
+
   private buildControls(controlKey: string, config: DynamicControl, fromGroup: FormGroup) {
     if (config.controlType === 'group') {
       this.buildGroup(controlKey, config.controls, fromGroup);
-      return
+      return;
     }
 
-    const validators = this.resolveValidators(config)
+    const validators = this.resolveValidators(config);
     fromGroup.addControl(controlKey, new FormControl(config.value, validators));
   }
 
