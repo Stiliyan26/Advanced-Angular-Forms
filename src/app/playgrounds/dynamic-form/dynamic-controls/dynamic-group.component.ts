@@ -34,6 +34,8 @@ export class DynamicGroupComponent extends BaseDynamicControl {
   override hostClass = '';
 
   controlResolver = inject(DynamicControlResolver);
+
   override formControl = new FormGroup({});
+  
   protected comparatorFn = comparatorFn;
 }
