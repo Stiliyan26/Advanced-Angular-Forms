@@ -43,7 +43,7 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
   form = this.fb.group({
     firstName: ['Dmytro', [
       Validators.required,
-      Validators.minLength(2),
+      Validators.minLength(4),
       banWords(['test', 'dummy'])
     ]],
     lastName: ['Mezhenskyi', [
