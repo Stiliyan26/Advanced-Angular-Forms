@@ -23,7 +23,6 @@ export class DynamicValidatorMessageDirective implements OnInit, OnDestroy {
       .pipe(
         startWith(this.ngControl.control.status), //  Emits the initial status immediately
         skip(this.ngControl instanceof NgModel ? 1 : 0), //If using template-driven forms (NgModel), skips the first emission
-        filter(status => status === 'VALID' || status === 'INVALID')
       ).subscribe(() => {
         if (this.ngControl.errors) {
 
