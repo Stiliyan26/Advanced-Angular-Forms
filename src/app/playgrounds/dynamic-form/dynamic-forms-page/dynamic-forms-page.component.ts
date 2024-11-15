@@ -29,7 +29,7 @@ import { DynamicValidatorMessageDirective } from '../../../core/dynamic-validato
   providers: [
     {
       provide: VALIDATION_ERROR_MESSAGES,
-      useValue: { ...ERROR_MESSAGES, required: `Don't leave this field empty` }
+      useValue: { ...ERROR_MESSAGES, required: () => `Don't leave this field empty` }
     }
   ],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -20,7 +20,7 @@ export class InputErrorComponent {
   @Input()
   errors: ValidationErrors | undefined | null = null;
 
-  trackByFn(index: number, item: KeyValue<string, any>) {
+  trackByFn(_: number, item: KeyValue<string, any>) {
     return item.key
   }
 }
