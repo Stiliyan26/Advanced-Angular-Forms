@@ -10,7 +10,11 @@ import { DynamicControlResolver } from '../service/dynamic-control-resolver.serv
 @Component({
   selector: 'app-dynamic-group',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ControlInjectorPipe],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    ControlInjectorPipe
+  ],
   viewProviders: [
     dynamicControlProvider
   ],

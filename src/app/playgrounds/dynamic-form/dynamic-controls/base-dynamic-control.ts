@@ -1,9 +1,10 @@
 import { Directive, HostBinding, inject, OnInit, StaticProvider } from "@angular/core";
-import { AbstractControl, ControlContainer, FormControl, FormGroup, Validators } from "@angular/forms";
+import { AbstractControl, ControlContainer, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CONTROL_DATA } from "../control-data.token";
-import { KeyValue } from "@angular/common";
+import { CommonModule, KeyValue } from "@angular/common";
 import { DynamicControl } from "../models/dynamic-form.model";
 import { banWords } from "../../reactive-forms/reactive-forms-page/validators/ban-words.validator";
+import { DynamicValidatorMessageDirective } from "../../../core/dynamic-validator-message.directive";
 
 
 export const comparatorFn = (
@@ -15,6 +16,12 @@ export const dynamicControlProvider: StaticProvider = {
   provide: ControlContainer,
   useFactory: () => inject(ControlContainer, { skipSelf: true })
 }
+
+export const sharedDynamicControlDeps = [
+  CommonModule, 
+  ReactiveFormsModule, 
+  DynamicValidatorMessageDirective
+];
 
 @Directive()
 export class BaseDynamicControl implements OnInit {
