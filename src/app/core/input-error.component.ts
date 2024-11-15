@@ -1,8 +1,7 @@
 import { CommonModule, KeyValue } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { ValidationErrors } from '@angular/forms';
-import { VALIDATION_ERROR_MESSAGES } from './validation-error-message.token';
 import { ErrorMessagePipe } from './error-message.pipe';
 
 @Component({

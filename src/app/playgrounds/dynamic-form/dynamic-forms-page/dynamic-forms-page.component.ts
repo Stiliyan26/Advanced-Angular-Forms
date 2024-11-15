@@ -8,14 +8,19 @@ import { DynamicControlResolver } from '../service/dynamic-control-resolver.serv
 import { ControlInjectorPipe } from '../pipe/control-injector.pipe';
 import { comparatorFn } from '../dynamic-controls/base-dynamic-control';
 import { DynamicFormConfig } from '../models/dynamic-form.model';
-import { InputErrorComponent } from "../../../core/input-error.component";
 
 import { VALIDATION_ERROR_MESSAGES, ERROR_MESSAGES } from '../../../core/validation-error-message.token';
+import { DynamicValidatorMessageDirective } from '../../../core/dynamic-validator-message.directive';
 
 @Component({
   selector: 'app-dynamic-forms-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ControlInjectorPipe, InputErrorComponent],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    ControlInjectorPipe, 
+    DynamicValidatorMessageDirective
+  ],
   templateUrl: './dynamic-forms-page.component.html',
   styleUrls: [
     '../../common-form.scss',

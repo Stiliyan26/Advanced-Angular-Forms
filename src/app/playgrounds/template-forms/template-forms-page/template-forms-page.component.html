@@ -16,7 +16,6 @@
       type="text"
       id="name"
       placeholder="Enter your name">
-    <app-input-error *ngIf="firstName.dirty" [errors]="firstName.errors"></app-input-error>
   </div>
 
   <div class="form-field">
@@ -30,7 +29,6 @@
       type="text"
       id="last-name"
       placeholder="Enter your last name">
-    <app-input-error *ngIf="lastName.dirty" [errors]="lastName.errors"></app-input-error>
   </div>
 
   <div class="form-field">
@@ -48,7 +46,6 @@
       type="text"
       id="nickname"
       placeholder="Come up with a nickname">
-    <app-input-error *ngIf="nickname.dirty" [errors]="nickname.errors"></app-input-error>
     <div *ngIf="nickname.pending" class="input-info">Checking...</div>
   </div>
 
@@ -63,7 +60,6 @@
       type="email"
       id="email"
       placeholder="Provide your email">
-    <app-input-error *ngIf="email.dirty" [errors]="email.errors"></app-input-error>
   </div>
 
   <div class="form-field-inline-group">
@@ -77,7 +73,6 @@
         name="year-of-birth">
         <option *ngFor="let year of years" [value]="year">{{year}}</option>
       </select>
-      <app-input-error *ngIf="yearOfBirth.dirty" [errors]="yearOfBirth.errors"></app-input-error>
     </div>
 
     <div class="form-field form-field--small">
@@ -91,7 +86,6 @@
         type="text"
         id="passport"
         placeholder="Provide Passport Data">
-      <app-input-error *ngIf="passport.dirty" [errors]="passport.errors"></app-input-error>
     </div>
   </div>
 
@@ -109,7 +103,6 @@
         id="full-address"
         placeholder="Street name and house number">
         
-      <app-input-error *ngIf="fullAddress.dirty" [errors]="fullAddress.errors"></app-input-error>
     </div>
 
     <div class="form-field">
@@ -122,7 +115,6 @@
         type="text"
         id="city"
         placeholder="City">
-      <app-input-error *ngIf="city.dirty" [errors]="city.errors"></app-input-error>
     </div>
 
     <div class="form-field">
@@ -135,7 +127,6 @@
         type="number"
         id="post-code"
         placeholder="Post code">
-      <app-input-error *ngIf="postCode.dirty" [errors]="postCode.errors"></app-input-error>
     </div>
   </fieldset>
 
@@ -153,7 +144,6 @@
         type="password"
         id="password"
         placeholder="Enter user's password">
-      <app-input-error *ngIf="password.dirty" [errors]="password.errors"></app-input-error>
     </div>
 
     <div class="form-field">
@@ -165,7 +155,6 @@
         type="password"
         id="confirm-password"
         placeholder="Confirm the password">
-      <app-input-error *ngIf="confirmPassword.dirty" [errors]="confirmPassword.errors"></app-input-error>
     </div>
   </fieldset>
 
