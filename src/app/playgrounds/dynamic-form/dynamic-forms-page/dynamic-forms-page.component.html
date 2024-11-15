@@ -19,31 +19,10 @@
         [ngComponentOutletInjector]="control.key | controlInjector:control.value">
       </ng-container>
 
-      <div
-        *ngIf="formConfig.form.get(control.key)?.dirty && formConfig.form.get(control.key)?.hasError('required')"
-        class="input-error">
-        This field is required
-      </div>
-
-      <div
-        *ngIf="formConfig.form.get(control.key)?.dirty && formConfig.form.get(control.key)?.hasError('email')"
-        class="input-error">
-        This must be a valid email
-      </div>
-
-      <div
-        *ngIf="formConfig.form.get(control.key)?.dirty && formConfig.form.get(control.key)?.hasError('minlength')"
-        class="input-error">
-        This field must be at least
-        {{formConfig.form.get(control.key)?.getError('minlength').requiredLength}}
-        characters
-      </div>
-
-      <div
-        *ngIf="formConfig.form.get(control.key)?.dirty && formConfig.form.get(control.key)?.hasError('banWords')"
-        class="input-error">
-        This word is not allowed
-      </div>
+      <app-input-error *ngIf="formConfig.form.get(control.key)?.dirty"
+        [errors]="formConfig.form.get(control.key)?.errors"
+      >
+      </app-input-error>
     </ng-container>
 
     <button [disabled]="formConfig.form.invalid">Save</button>

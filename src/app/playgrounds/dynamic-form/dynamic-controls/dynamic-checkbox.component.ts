@@ -28,7 +28,7 @@ import { BaseDynamicControl, dynamicControlProvider } from './base-dynamic-contr
       align-items: center;
       margin-top: 10px;
     }
-  `]
+  `],
 })
 export class DynamicCheckboxComponent extends BaseDynamicControl {
 }
