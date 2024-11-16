@@ -6,7 +6,13 @@ import { InputErrorComponent } from './input-error.component';
 import { ErrorStateMatcher } from './error-state-matcher.service';
 
 @Directive({
-  selector: '[ngModel],[formControl],[formControlName],[formGroupName],[ngModelGroup]',
+  selector: `
+    [ngModel]:not([withoutValidationErrors]),
+    [formControl]:not([withoutValidationErrors]),
+    [formControlName]:not([withoutValidationErrors]),
+    [formGroupName]:not([withoutValidationErrors]),
+    [ngModelGroup]:not([withoutValidationErrors])
+  `,
   standalone: true
 })
 export class DynamicValidatorMessageDirective implements OnInit, OnDestroy {
