@@ -1,7 +1,9 @@
-import { ComponentRef, Directive, ElementRef, inject, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ComponentRef, Directive, ElementRef, inject, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { ControlContainer, FormGroupDirective, NgControl, NgForm, NgModel } from '@angular/forms';
 import { distinctUntilChanged, EMPTY, fromEvent, iif, merge, skip, startWith, Subscription, tap } from 'rxjs';
+
 import { InputErrorComponent } from './input-error.component';
+import { ErrorStateMatcher } from './error-state-matcher.service';
 
 @Directive({
   selector: '[ngModel],[formControl],[formControlName]',
@@ -15,6 +17,9 @@ export class DynamicValidatorMessageDirective implements OnInit, OnDestroy {
   get form() {
     return this.parentContainer?.formDirective as NgForm | FormGroupDirective | null;
   }
+
+  @Input()
+  errorStateMatcher = inject(ErrorStateMatcher);
 
   private vcr = inject(ViewContainerRef);
 
@@ -40,27 +45,26 @@ export class DynamicValidatorMessageDirective implements OnInit, OnDestroy {
       );
 
     this.errrorMessageTrigger = merge(
-      statusChanges$, 
+      statusChanges$,
       blur$,
       iif(() => !!this.form, this.form!.ngSubmit, EMPTY)
-    )
-      .pipe(
-        startWith(this.ngControl.control.status), //  Emits the initial status immediately
-        skip(this.ngControl instanceof NgModel ? 1 : 0), //If using template-driven forms (NgModel), skips the first emission
-      ).subscribe(() => {
-        if (this.ngControl.errors && this.form?.submitted) {
+    ).pipe(
+      startWith(this.ngControl.control.status), //  Emits the initial status immediately
+      skip(this.ngControl instanceof NgModel ? 1 : 0), //If using template-driven forms (NgModel), skips the first emission
+    ).subscribe(() => {
+      if (this.errorStateMatcher.isErrorVisible(this.ngControl.control, this.form)) {
 
-          if (!this.componentRef) {
-            this.componentRef = this.vcr.createComponent(InputErrorComponent);
-            this.componentRef.changeDetectorRef.markForCheck();
-          }
-          // this.componentRef ??= this.vcr.createComponent(InputErrorComponent);
-          this.componentRef.setInput('errors', this.ngControl.errors);
-        } else {
-          this.componentRef?.destroy();
-          this.componentRef = null;
+        if (!this.componentRef) {
+          this.componentRef = this.vcr.createComponent(InputErrorComponent);
+          this.componentRef.changeDetectorRef.markForCheck();
         }
-      });
+        // this.componentRef ??= this.vcr.createComponent(InputErrorComponent);
+        this.componentRef.setInput('errors', this.ngControl.errors);
+      } else {
+        this.componentRef?.destroy();
+        this.componentRef = null;
+      }
+    });
   }
 
   ngOnDestroy(): void {

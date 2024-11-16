@@ -8,14 +8,15 @@ import { passwordShouldMatch } from './validators/password-should-match.validato
 import { UniqueNicknameValidator } from './validators/unique-nickname.validator';
 
 import { DynamicValidatorMessageDirective } from '../../../core/dynamic-validator-message.directive';
+import { ErrorStateMatcher, OnTouchedErrorStateMatcher } from '../../../core/error-state-matcher.service';
 
 
 @Component({
   selector: 'app-reactive-forms-page',
   standalone: true,
   imports: [
-    CommonModule, 
-    ReactiveFormsModule, 
+    CommonModule,
+    ReactiveFormsModule,
     DynamicValidatorMessageDirective
   ],
   templateUrl: './reactive-forms-page.component.html',
@@ -24,7 +25,14 @@ import { DynamicValidatorMessageDirective } from '../../../core/dynamic-validato
     '../../common-form.scss',
     './reactive-forms-page.component.scss'
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers:
+    [
+      {
+        provide: ErrorStateMatcher,
+        useClass: OnTouchedErrorStateMatcher
+      }
+    ]
 })
 export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
 
@@ -40,7 +48,7 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
   onBlur(event: any) {
     console.log('Component blur event fired');
   }
-  
+
   private fb = inject(FormBuilder);
   private userSkills = inject(UserSkillsService);
   private uniqueNickname = inject(UniqueNicknameValidator);
@@ -144,7 +152,7 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
 
   onSubmit(e: Event) {
     console.log(this.form.value);
-    this.initalFormValues = this.form.value;  
+    this.initalFormValues = this.form.value;
     this.formDir.resetForm(this.form.value);
   }
 

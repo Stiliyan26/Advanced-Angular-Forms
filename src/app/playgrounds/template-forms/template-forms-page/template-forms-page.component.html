@@ -10,7 +10,7 @@
     <input
       [(ngModel)]="userInfo.firstName"
       required
-      minlength="2"
+      minlength="5"
       [appBanWords]="this.isAdult ? ['test', 'test_test', 'dummy'] : []"
       #firstName="ngModel"
       name="first-name"
@@ -24,7 +24,7 @@
     <input
       [(ngModel)]="userInfo.lastName"
       required
-      minlength="2"
+      minlength="5"
       #lastName="ngModel"
       name="last-name"
       type="text"
