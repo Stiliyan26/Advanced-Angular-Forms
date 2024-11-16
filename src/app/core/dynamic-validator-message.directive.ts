@@ -6,12 +6,14 @@ import { InputErrorComponent } from './input-error.component';
 import { ErrorStateMatcher } from './error-state-matcher.service';
 
 @Directive({
-  selector: '[ngModel],[formControl],[formControlName]',
+  selector: '[ngModel],[formControl],[formControlName],[formGroupName],[ngModelGroup]',
   standalone: true
 })
 export class DynamicValidatorMessageDirective implements OnInit, OnDestroy {
   //gets the control from the same element the directive is on, not from a parent
-  ngControl = inject(NgControl, { self: true }); // token comes from the same nde { self: true }
+  // token comes from the same nde { self: true }
+  ngControl = inject(NgControl, { self: true, optional: true }) || inject(ControlContainer, { self: true });
+
   elementRef = inject(ElementRef);
 
   get form() {
@@ -29,41 +31,46 @@ export class DynamicValidatorMessageDirective implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    if (!this.ngControl.control) throw Error(`No control model for ${this.ngControl.name} control...`);
+    //TODO: stream that listnes for status changes for registered control
 
-    const statusChanges$ = this.ngControl.control.statusChanges
-      .pipe(
-        distinctUntilChanged()
-      );
+    //use queueMicroTask becouse creating a formGroup using ngModelGroup is happening async 
+    queueMicrotask(() => {
+      if (!this.ngControl.control) throw Error(`No control model for ${this.ngControl.name} control...`);
 
-    const blur$ = fromEvent(this.elementRef.nativeElement, 'blur')
-      .pipe(
-        tap(() => {
-          this.ngControl.control?.markAsTouched();
-          this.ngControl.control?.updateValueAndValidity();
-        })
-      );
+      const statusChanges$ = this.ngControl.control.statusChanges
+        .pipe(
+          distinctUntilChanged()
+        );
 
-    this.errrorMessageTrigger = merge(
-      statusChanges$,
-      blur$,
-      iif(() => !!this.form, this.form!.ngSubmit, EMPTY)
-    ).pipe(
-      startWith(this.ngControl.control.status), //  Emits the initial status immediately
-      skip(this.ngControl instanceof NgModel ? 1 : 0), //If using template-driven forms (NgModel), skips the first emission
-    ).subscribe(() => {
-      if (this.errorStateMatcher.isErrorVisible(this.ngControl.control, this.form)) {
+      const blur$ = fromEvent(this.elementRef.nativeElement, 'blur')
+        .pipe(
+          tap(() => {
+            this.ngControl.control?.markAsTouched();
+            this.ngControl.control?.updateValueAndValidity();
+          })
+        );
 
-        if (!this.componentRef) {
-          this.componentRef = this.vcr.createComponent(InputErrorComponent);
-          this.componentRef.changeDetectorRef.markForCheck();
+      this.errrorMessageTrigger = merge(
+        statusChanges$,
+        blur$,
+        iif(() => !!this.form, this.form!.ngSubmit, EMPTY)
+      ).pipe(
+        startWith(this.ngControl.control.status), //  Emits the initial status immediately
+        skip(this.ngControl instanceof NgModel ? 1 : 0), //If using template-driven forms (NgModel), skips the first emission
+      ).subscribe(() => {
+        if (this.errorStateMatcher.isErrorVisible(this.ngControl.control, this.form)) {
+
+          if (!this.componentRef) {
+            this.componentRef = this.vcr.createComponent(InputErrorComponent);
+            this.componentRef.changeDetectorRef.markForCheck();
+          }
+          // this.componentRef ??= this.vcr.createComponent(InputErrorComponent);
+          this.componentRef.setInput('errors', this.ngControl.errors);
+        } else {
+          this.componentRef?.destroy();
+          this.componentRef = null;
         }
-        // this.componentRef ??= this.vcr.createComponent(InputErrorComponent);
-        this.componentRef.setInput('errors', this.ngControl.errors);
-      } else {
-        this.componentRef?.destroy();
-        this.componentRef = null;
-      }
+      });
     });
   }
 
