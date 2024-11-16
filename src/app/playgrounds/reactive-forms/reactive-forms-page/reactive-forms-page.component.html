@@ -3,7 +3,7 @@
   <div class="form-field">
     <label for="name">First Name</label>
 
-    <input formControlName="firstName" type="text" id="name"
+    <input [errorStateMatcher]="showErrorStrategy" formControlName="firstName" type="text" id="name"
       placeholder="Enter your name">
   </div>
 
@@ -18,7 +18,7 @@
     <label for="nickname">Nickname</label>
 
     <input formControlName="nickname" type="text" id="nickname"
-      placeholder="Come up with a nickname" (blur)="onBlur($event)">
+      placeholder="Come up with a nickname">
   </div>
 
   <div class="form-field">

@@ -8,7 +8,7 @@ import { passwordShouldMatch } from './validators/password-should-match.validato
 import { UniqueNicknameValidator } from './validators/unique-nickname.validator';
 
 import { DynamicValidatorMessageDirective } from '../../../core/dynamic-validator-message.directive';
-import { ErrorStateMatcher, OnTouchedErrorStateMatcher } from '../../../core/error-state-matcher.service';
+import { OnTouchedErrorStateMatcher } from '../../../core/error-state-matcher.service';
 
 
 @Component({
@@ -25,14 +25,7 @@ import { ErrorStateMatcher, OnTouchedErrorStateMatcher } from '../../../core/err
     '../../common-form.scss',
     './reactive-forms-page.component.scss'
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers:
-    [
-      {
-        provide: ErrorStateMatcher,
-        useClass: OnTouchedErrorStateMatcher
-      }
-    ]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
 
@@ -40,14 +33,12 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
   years = this.getYears();
   skills$!: Observable<string[]>;
 
+  showErrorStrategy = new OnTouchedErrorStateMatcher(); //!important
+
   private ageValidators!: Subscription;
   private formPendingState!: Subscription;
 
   private initalFormValues: any;
-
-  onBlur(event: any) {
-    console.log('Component blur event fired');
-  }
 
   private fb = inject(FormBuilder);
   private userSkills = inject(UserSkillsService);
