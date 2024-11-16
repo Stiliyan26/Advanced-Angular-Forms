@@ -80,6 +80,8 @@ export class TemplateFormsPageComponent implements OnInit, AfterViewInit {
     //   'first-name': form.controls['first-name'].value
     //  });
 
+    if (this.formDir.invalid) return;
+
     this.formDir.resetForm(this.formDir.value);
     this.inialFormValues = this.formDir.value;                                                    
     // console.log('The native submit event', e);

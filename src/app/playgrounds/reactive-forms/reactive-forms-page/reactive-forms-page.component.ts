@@ -37,6 +37,10 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
 
   private initalFormValues: any;
 
+  onBlur(event: any) {
+    console.log('Component blur event fired');
+  }
+  
   private fb = inject(FormBuilder);
   private userSkills = inject(UserSkillsService);
   private uniqueNickname = inject(UniqueNicknameValidator);
