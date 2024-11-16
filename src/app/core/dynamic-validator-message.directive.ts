@@ -48,7 +48,7 @@ export class DynamicValidatorMessageDirective implements OnInit, OnDestroy {
         startWith(this.ngControl.control.status), //  Emits the initial status immediately
         skip(this.ngControl instanceof NgModel ? 1 : 0), //If using template-driven forms (NgModel), skips the first emission
       ).subscribe(() => {
-        if (this.ngControl.errors && this.ngControl.control?.touched) {
+        if (this.ngControl.errors && this.form?.submitted) {
 
           if (!this.componentRef) {
             this.componentRef = this.vcr.createComponent(InputErrorComponent);
