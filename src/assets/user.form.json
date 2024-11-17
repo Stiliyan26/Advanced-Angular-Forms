@@ -67,7 +67,11 @@
           "label": "Twitter",
           "value": null,
           "type": "text",
-          "order": 1
+          "order": 1,
+          "activationConfig": {
+            "controlPath": "socialProfiles.youtube",
+            "hasValue": "https://youtube.com/DecodedFrontend"
+          }
         },
         "instagram": {
           "controlType": "input",
@@ -76,8 +80,8 @@
           "type": "text",
           "order": 2,
           "activationConfig": {
-            "controlPath": "socialProfiles.youtube",
-            "hasValue": "https://youtube.com/DecodedFrontend"
+            "controlPath": "socialProfiles.twitter",
+            "hasValue": "https://twitter.com/DecodedFrontend"
           }
         }
       }

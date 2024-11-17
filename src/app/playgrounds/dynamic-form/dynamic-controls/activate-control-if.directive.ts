@@ -1,8 +1,8 @@
 import { Directive, inject, Input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
+
 import { FormGroupDirective } from '@angular/forms';
 import { DynamicControl } from '../models/dynamic-form.model';
-import { Subject, timer } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, pairwise, startWith, Subject, switchMap, takeUntil } from 'rxjs';
 
 @Directive({
   selector: '[activateControlIf]',
@@ -11,84 +11,63 @@ import { takeUntil } from 'rxjs/operators';
 export class ActivateControlIfDirective implements OnInit, OnDestroy {
 
   @Input('activateControlIf')
-  config?: DynamicControl['activationConfig'];
+  config?: DynamicControl['activationConfig']
 
   private vcr = inject(ViewContainerRef);
   private templateRef = inject(TemplateRef);
-  private formGroupDir = inject(FormGroupDirective);
+  private rootFormGroup = inject(FormGroupDirective).form;
 
-  private destroy$ = new Subject<void>();
+  // detecting a moment when control we need is registered in the form.
+  private isControlRegistered$ = this.rootFormGroup.valueChanges
+    .pipe(
+      startWith(this.rootFormGroup.value),
+      map(() => !!this.rootFormGroup.get(this.config?.controlPath!)),
+      distinctUntilChanged()
+    )
+  // get an instance of the control
+  private registeredControl$ = this.isControlRegistered$
+    .pipe(
+      filter(Boolean),
+      map(() => this.rootFormGroup.get(this.config?.controlPath!))
+    );
+
+  private controlRemove$ = this.isControlRegistered$
+    .pipe(
+      pairwise(),
+      filter(([prevValue, currentValue]) => prevValue === true && currentValue === false)
+    );
+
+  private destory$ = new Subject<void>();
 
   ngOnInit() {
     if (!this.config) {
       this.vcr.createEmbeddedView(this.templateRef);
       return;
     }
-
-    const { controlPath, hasValue } = this.config;
-
-    // Wait for next tick to ensure form is initialized
-    timer(0)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        const form = this.formGroupDir.form;
-        // Support for nested paths
-        const value = form.get(controlPath)?.value;
-
-        console.log('Initial form value:', {
-          path: controlPath,
-          value,
-          expected: hasValue
-        });
-        
-        // Initial check
-        this.updateView(value);
-
-        // Subscribe to value changes
-        if (controlPath.includes('.')) {
-          // For nested paths, subscribe to specific control
-          const control = form.get(controlPath);
-
-          if (control) {
-            control.valueChanges
-              .pipe(takeUntil(this.destroy$))
-              .subscribe(newValue => {
-                console.log('Nested value changed:', newValue);
-                this.updateView(newValue);
-              });
-          }
-        } else {
-          // For root level paths, subscribe to form changes
-          form.valueChanges
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(formValue => {
-              const newValue = formValue[controlPath];
-              console.log('Value changed:', newValue);
-              this.updateView(newValue);
-            });
-        }
-      });
-  }
-
-  private updateView(value: any) {
-    if (!this.config) return;
-    
-    console.log('Updating view:', { 
-      value, 
-      expected: this.config.hasValue 
-    });
-
-    if (value === this.config.hasValue) {
-      if (!this.vcr.length) {
+    // start listening to the control changes
+    this.registeredControl$.pipe(
+      switchMap(control => control!.valueChanges
+        .pipe(
+          startWith(control?.value)
+        )
+      ),
+      takeUntil(this.destory$)
+    ).subscribe(value => {
+      this.vcr.clear();
+      // adjust (show/hide) view accordingly with control changes.
+      if (this.config?.hasValue === value) {
         this.vcr.createEmbeddedView(this.templateRef);
       }
-    } else {
-      this.vcr.clear();
-    }
+    });
+
+    // destroy the embedded view if the tracking control is removed from the form.
+    this.controlRemove$
+      .pipe(takeUntil(this.destory$))
+      .subscribe(() => this.vcr.clear());
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+  ngOnDestroy(): void {
+    this.destory$.next();
+    this.destory$.complete();
   }
 }

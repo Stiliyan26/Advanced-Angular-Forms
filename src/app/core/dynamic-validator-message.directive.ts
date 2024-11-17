@@ -18,7 +18,8 @@ import { ErrorStateMatcher } from './error-state-matcher.service';
 export class DynamicValidatorMessageDirective implements OnInit, OnDestroy {
   //gets the control from the same element the directive is on, not from a parent
   // token comes from the same nde { self: true }
-  ngControl = inject(NgControl, { self: true, optional: true }) || inject(ControlContainer, { self: true });
+  ngControl = inject(NgControl, { self: true, optional: true }) 
+    || inject(ControlContainer, { self: true });
 
   elementRef = inject(ElementRef);
 
