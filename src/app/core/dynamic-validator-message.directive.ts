@@ -44,22 +44,9 @@ export class DynamicValidatorMessageDirective implements OnInit, OnDestroy {
     queueMicrotask(() => {
       if (!this.ngControl.control) throw Error(`No control model for ${this.ngControl.name} control...`);
 
-      const statusChanges$ = this.ngControl.control.statusChanges
-        .pipe(
-          distinctUntilChanged()
-        );
-
-      const blur$ = fromEvent(this.elementRef.nativeElement, 'blur')
-        .pipe(
-          tap(() => {
-            this.ngControl.control?.markAsTouched();
-            this.ngControl.control?.updateValueAndValidity();
-          })
-        );
-
       this.errrorMessageTrigger = merge(
-        statusChanges$,
-        blur$,
+        this.ngControl.control.statusChanges,
+        fromEvent(this.elementRef.nativeElement, 'blur'),
         iif(() => !!this.form, this.form!.ngSubmit, EMPTY)
       ).pipe(
         startWith(this.ngControl.control.status), //  Emits the initial status immediately

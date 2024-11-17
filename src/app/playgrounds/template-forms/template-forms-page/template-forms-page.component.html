@@ -1,10 +1,9 @@
 <form
   class="form"
   #form="ngForm"
+  [ngFormOptions]="{ updateOn: 'submit' }"
   (ngSubmit)="onSubmitForm($event)"
   (reset)="onReset($event)">
-  <!-- [ngFormOptions]="{ updateOn: 'submit' }" -->
-  <pre>{{userInfo | json}}</pre>
 
   <div class="form-field">
     <!-- <label for="name">First Name</label>

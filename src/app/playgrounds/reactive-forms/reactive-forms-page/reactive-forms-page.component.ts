@@ -93,7 +93,8 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
       ],
       confirmPassword: ''
     }, {
-      validators: passwordShouldMatch
+      validators: passwordShouldMatch,
+      updateOn: 'blur'
     })
   });
 
