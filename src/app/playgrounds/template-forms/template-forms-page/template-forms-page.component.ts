@@ -7,6 +7,7 @@ import { PasswordShouldMatchDirective } from '../validators/password-should-matc
 import { UniqueNicknameDirective } from '../validators/unique-nickname.directive';
 
 import { DynamicValidatorMessageDirective } from '../../../core/dynamic-validator-message.directive';
+import { ValidatorMessageContainerDirective } from '../../../core/validator-message-container.directive';
 
 @Component({
   selector: 'app-template-forms-page',
@@ -17,7 +18,8 @@ import { DynamicValidatorMessageDirective } from '../../../core/dynamic-validato
     BanWordsDirective,
     PasswordShouldMatchDirective,
     UniqueNicknameDirective,
-    DynamicValidatorMessageDirective
+    DynamicValidatorMessageDirective,
+    ValidatorMessageContainerDirective
   ],
   templateUrl: './template-forms-page.component.html',
   styleUrls: [
@@ -85,6 +87,10 @@ export class TemplateFormsPageComponent implements OnInit, AfterViewInit {
     this.formDir.resetForm(this.formDir.value);
     this.inialFormValues = this.formDir.value;                                                    
     // console.log('The native submit event', e);
+  }
+
+  modelChanged(value: string) {
+    this.userInfo.firstName = value;
   }
 
   onReset(e: Event) {

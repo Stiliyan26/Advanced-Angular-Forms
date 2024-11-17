@@ -14,4 +14,6 @@ import { Title } from '@angular/platform-browser';
 })
 export class AppComponent {
   constructor(public title: Title) {}
+
+  copyrightYear = new Date().getFullYear();
 }

@@ -29,7 +29,8 @@ export class DynamicValidatorMessageDirective implements OnInit, OnDestroy {
   @Input()
   errorStateMatcher = inject(ErrorStateMatcher);
 
-  private vcr = inject(ViewContainerRef);
+  @Input()
+  container = inject(ViewContainerRef);
 
   private componentRef: ComponentRef<InputErrorComponent> | null = null;
   private errrorMessageTrigger!: Subscription;
@@ -67,10 +68,10 @@ export class DynamicValidatorMessageDirective implements OnInit, OnDestroy {
         if (this.errorStateMatcher.isErrorVisible(this.ngControl.control, this.form)) {
 
           if (!this.componentRef) {
-            this.componentRef = this.vcr.createComponent(InputErrorComponent);
+            this.componentRef = this.container.createComponent(InputErrorComponent);
             this.componentRef.changeDetectorRef.markForCheck();
           }
-          // this.componentRef ??= this.vcr.createComponent(InputErrorComponent);
+          // this.componentRef ??= this.container.createComponent(InputErrorComponent);
           this.componentRef.setInput('errors', this.ngControl.errors);
         } else {
           this.componentRef?.destroy();

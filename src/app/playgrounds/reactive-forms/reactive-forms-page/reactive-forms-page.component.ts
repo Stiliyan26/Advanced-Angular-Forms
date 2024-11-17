@@ -9,6 +9,7 @@ import { UniqueNicknameValidator } from './validators/unique-nickname.validator'
 
 import { DynamicValidatorMessageDirective } from '../../../core/dynamic-validator-message.directive';
 import { OnTouchedErrorStateMatcher } from '../../../core/error-state-matcher.service';
+import { ValidatorMessageContainerDirective } from '../../../core/validator-message-container.directive';
 
 
 @Component({
@@ -17,13 +18,14 @@ import { OnTouchedErrorStateMatcher } from '../../../core/error-state-matcher.se
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    DynamicValidatorMessageDirective
+    DynamicValidatorMessageDirective,
+    ValidatorMessageContainerDirective
   ],
   templateUrl: './reactive-forms-page.component.html',
   styleUrls: [
     '../../common-page.scss',
     '../../common-form.scss',
-    './reactive-forms-page.component.scss'
+    './reactive-forms-page.component.scss' 
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

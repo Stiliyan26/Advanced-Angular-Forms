@@ -1,14 +1,28 @@
 <form
   class="form"
-  [ngFormOptions]="{ updateOn: 'submit' }"
   #form="ngForm"
   (ngSubmit)="onSubmitForm($event)"
   (reset)="onReset($event)">
-  
+  <!-- [ngFormOptions]="{ updateOn: 'submit' }" -->
+  <pre>{{userInfo | json}}</pre>
+
   <div class="form-field">
-    <label for="name">First Name</label>
+    <!-- <label for="name">First Name</label>
     <input
       [(ngModel)]="userInfo.firstName"
+      required
+      minlength="5"
+      [appBanWords]="this.isAdult ? ['test', 'test_test', 'dummy'] : []"
+      #firstName="ngModel"
+      name="first-name"
+      type="text"
+      id="name"
+      placeholder="Enter your name"> -->
+
+    <input
+      ngModel
+      [ngModel]="userInfo.firstName"
+      (ngModelChange)="modelChanged($event)"
       required
       minlength="5"
       [appBanWords]="this.isAdult ? ['test', 'test_test', 'dummy'] : []"
@@ -66,11 +80,11 @@
   <div class="form-field-inline-group">
     <div class="form-field form-field--small">
       <label for="year-of-birth">Year of birth</label>
-      <select 
-        #yearOfBirth="ngModel" 
-        required 
+      <select
+        #yearOfBirth="ngModel"
+        required
         id="year-of-birth"
-        [(ngModel)]="userInfo.yearOfBirth" 
+        [(ngModel)]="userInfo.yearOfBirth"
         name="year-of-birth">
         <option *ngFor="let year of years" [value]="year">{{year}}</option>
       </select>
@@ -92,7 +106,7 @@
 
   <fieldset ngModelGroup="address">
     <legend>Address</legend>
-    
+
     <div class="form-field">
       <label for="full-address">Full Address</label>
       <input
@@ -103,7 +117,7 @@
         type="text"
         id="full-address"
         placeholder="Street name and house number">
-        
+
     </div>
 
     <div class="form-field">
@@ -131,11 +145,17 @@
     </div>
   </fieldset>
 
-  <fieldset ngModelGroup="password" appPasswordShouldMatch #passwordGroup="ngModelGroup">
+  <fieldset
+    ngModelGroup="password"
+    appPasswordShouldMatch
+    #passwordGroup="ngModelGroup"
+    [container]="containerDir.container">
+
     <legend>User Password</legend>
-    
+
     <div class="form-field">
       <label for="password">Password</label>
+
       <input
         [(ngModel)]="userInfo.password"
         required
@@ -149,6 +169,7 @@
 
     <div class="form-field">
       <label for="confirm-password">Confirm password</label>
+
       <input
         [(ngModel)]="userInfo.confirmPassword"
         withoutValidationErrors
@@ -158,6 +179,11 @@
         id="confirm-password"
         placeholder="Confirm the password">
     </div>
+
+    <ng-container
+      validatorMessageContainer
+      #containerDir="validatorMessageContainer">
+    </ng-container>
   </fieldset>
 
   <button>Save</button>

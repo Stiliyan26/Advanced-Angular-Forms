@@ -3,10 +3,10 @@
   <div class="form-field">
     <label for="name">First Name</label>
 
-    <input 
-      [errorStateMatcher]="showErrorStrategy" 
-      formControlName="firstName" 
-      type="text" 
+    <input
+      [errorStateMatcher]="showErrorStrategy"
+      formControlName="firstName"
+      type="text"
       id="name"
       placeholder="Enter your name">
   </div>
@@ -14,21 +14,30 @@
   <div class="form-field">
     <label for="last-name">Last Name</label>
 
-    <input formControlName="lastName" type="text" id="last-name"
+    <input
+        formControlName="lastName"
+        type="text"
+        id="last-name"
       placeholder="Enter your last name">
   </div>
 
   <div class="form-field">
     <label for="nickname">Nickname</label>
 
-    <input formControlName="nickname" type="text" id="nickname"
+    <input
+      formControlName="nickname"
+      type="text"
+      id="nickname"
       placeholder="Come up with a nickname">
   </div>
 
   <div class="form-field">
     <label for="email">Email</label>
 
-    <input formControlName="email" type="email" id="email"
+    <input
+      formControlName="email"
+      type="email"
+      id="email"
       placeholder="Provide your email">
   </div>
   <div class="form-field-inline-group">
@@ -42,24 +51,35 @@
     <div class="form-field form-field--small">
       <label for="passport">Passport Number</label>
 
-      <input formControlName="passport" type="text" id="passport"
+      <input
+        formControlName="passport"
+        type="text"
+        id="passport"
         placeholder="Provide Passport Data">
     </div>
   </div>
 
   <fieldset formGroupName="address">
     <legend>Address</legend>
+    
     <div class="form-field">
       <label for="full-address">Full Adress</label>
 
-      <input formControlName="fullAddress" type="text" id="full-address"
+      <input
+        formControlName="fullAddress"
+        type="text"
+        id="full-address"
         placeholder="Street name and house number">
     </div>
 
     <div class="form-field">
       <label for="city">City</label>
 
-      <input formControlName="city" type="text" id="city" placeholder="City">
+      <input
+        formControlName="city"
+        type="text"
+        id="city"
+        placeholder="City">
 
       <ng-container *ngIf="form.controls.address.controls.city as city">
       </ng-container>
@@ -68,7 +88,10 @@
     <div class="form-field">
       <label for="post-code">Post Code</label>
 
-      <input formControlName="postCode" type="number" id="post-code"
+      <input
+        formControlName="postCode"
+        type="number"
+        id="post-code"
         placeholder="Post code">
     </div>
   </fieldset>
@@ -87,12 +110,18 @@
 
       <div class="control-container">
         <select class="phone-label-dropdown" formControlName="label">
-          <option *ngFor="let label of phoneLabels"
-            [value]="label">{{label}}</option>
+          <option
+            *ngFor="let label of phoneLabels"
+            [value]="label">
+            {{label}}
+          </option>
         </select>
 
-        <input formControlName="phone" type="text"
-          placeholder="Enter Phone Number" id="phone-{{i}}">
+        <input
+          formControlName="phone"
+          type="text"
+          placeholder="Enter Phone Number"
+          id="phone-{{i}}">
 
         <button class="remove-button" (click)="removePhone(i)"
           type="button">-</button>
@@ -105,32 +134,47 @@
 
     <ng-container *ngIf="skills$ | async as skills; else loading">
       <div class="skill-container" *ngFor="let skill of skills">
-        <input type="checkbox" [formControlName]="skill" [id]="skill">
+        <input
+          type="checkbox"
+          [formControlName]="skill"
+          [id]="skill">
         <label [for]="skill">{{ skill | titlecase }}</label>
       </div>
     </ng-container>
   </fieldset>
 
-  <fieldset formGroupName="password">
+  <fieldset formGroupName="password" [container]="containerDir.container">
     <legend>Password</legend>
 
     <div class="form-field">
       <label for="password">Create Password</label>
 
-      <input formControlName="password" type="password" id="password"
+      <input
+        formControlName="password"
+        type="password"
+        id="password"
         placeholder="Enter password...">
     </div>
 
     <div class="form-field">
       <label for="confirm-password">Confirm Password</label>
 
-      <input formControlName="confirmPassword" withoutValidationErrors type="password"
-        id="confirm-password" placeholder="Enter password...">
+      <input
+        formControlName="confirmPassword"
+        withoutValidationErrors
+        type="password"
+        id="confirm-password"
+        placeholder="Enter password...">
+
+      <ng-container 
+        validatorMessageContainer 
+        #containerDir="validatorMessageContainer">
+      </ng-container>
     </div>
   </fieldset>
 
   <button [disabled]="form.invalid || form.pending">Save</button>
-  
+
   <button class="reset-button" type="reset"
     [disabled]="form.pristine">Reset</button>
 </form>
