@@ -1,7 +1,7 @@
 {
   "description": "The new user form config",
   "controls": {
-    "displayName": {
+    "fullName": {
       "controlType": "input",
       "type": "text",
       "label": "Full Name",
@@ -29,7 +29,7 @@
     "role": {
       "controlType": "select",
       "label": "User Role",
-      "value": "",
+      "value": "admin",
       "order": 2,
       "options": [
         {
@@ -50,11 +50,15 @@
       "controlType": "group",
       "label": "Links to Social Profiles",
       "order": 3,
+      "activationConfig": {
+        "controlPath": "role",
+        "hasValue": "admin"
+      },
       "controls": {
         "youtube": {
           "controlType": "input",
-          "label": "Youtube",
-          "value": null,
+          "label": "YouTube",
+          "value": "https://youtube.com/DecodedFrontend",
           "type": "text",
           "order": 0
         },
@@ -70,14 +74,18 @@
           "label": "Instagram",
           "value": null,
           "type": "text",
-          "order": 2
+          "order": 2,
+          "activationConfig": {
+            "controlPath": "socialProfiles.youtube",
+            "hasValue": "https://youtube.com/DecodedFrontend"
+          }
         }
       }
     },
     "phoneNumbers": {
       "controlType": "array",
       "label": "Phone Numbers",
-      "order": "4",
+      "order": 4,
       "interactive": {
         "buttonText": "Add new Phone Number",
         "controlTemplate": {

@@ -11,6 +11,7 @@ import { DynamicFormConfig } from '../models/dynamic-form.model';
 
 import { VALIDATION_ERROR_MESSAGES, ERROR_MESSAGES } from '../../../core/validation-error-message.token';
 import { DynamicValidatorMessageDirective } from '../../../core/dynamic-validator-message.directive';
+import { ActivateControlIfDirective } from '../dynamic-controls/activate-control-if.directive';
 
 @Component({
   selector: 'app-dynamic-forms-page',
@@ -19,7 +20,8 @@ import { DynamicValidatorMessageDirective } from '../../../core/dynamic-validato
     CommonModule, 
     ReactiveFormsModule, 
     ControlInjectorPipe, 
-    DynamicValidatorMessageDirective
+    DynamicValidatorMessageDirective,
+    ActivateControlIfDirective
   ],
   templateUrl: './dynamic-forms-page.component.html',
   styleUrls: [

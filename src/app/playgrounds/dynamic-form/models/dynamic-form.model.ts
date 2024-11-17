@@ -18,6 +18,10 @@ export interface DynamicControl<T = string> {
     buttonText: string;
     controlTemplate: DynamicControl;
   };
+  activationConfig?: {
+    controlPath: string,
+    hasValue: any;
+  }
   controlInstance?: AbstractControl<T>
   options?: DynamicOptions[];
   controls?: DynamicFormConfig['controls'] | DynamicControl[];
