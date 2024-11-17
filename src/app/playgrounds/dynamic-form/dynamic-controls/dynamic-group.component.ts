@@ -36,10 +36,10 @@ import { DynamicFormConfig } from '../models/dynamic-form.model';
 export class DynamicGroupComponent extends BaseDynamicControl {
 
   @HostBinding('class')
-  override hostClass = '';
+  override hostClass = 'form-field-group';
 
   controlResolver = inject(DynamicControlResolver);
-
+  
   override formControl = new FormGroup({});
   
   protected comparatorFn = comparatorFn;

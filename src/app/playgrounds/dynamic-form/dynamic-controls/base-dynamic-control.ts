@@ -1,5 +1,5 @@
 import { Directive, HostBinding, inject, OnDestroy, OnInit, StaticProvider } from "@angular/core";
-import { AbstractControl, ControlContainer, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { AbstractControl, ControlContainer, FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CONTROL_DATA } from "../control-data.token";
 import { CommonModule, KeyValue } from "@angular/common";
 import { DynamicControl } from "../models/dynamic-form.model";
@@ -18,14 +18,13 @@ export const dynamicControlProvider: StaticProvider = {
 }
 
 export const sharedDynamicControlDeps = [
-  CommonModule, 
-  ReactiveFormsModule, 
+  CommonModule,
+  ReactiveFormsModule,
   DynamicValidatorMessageDirective
 ];
 
 @Directive()
 export class BaseDynamicControl implements OnInit, OnDestroy {
-  
 
   @HostBinding('class')
   hostClass = 'form-field';
@@ -40,10 +39,16 @@ export class BaseDynamicControl implements OnInit, OnDestroy {
   private parentGroupDir = inject(ControlContainer);
 
   ngOnInit(): void {
-    (this.parentGroupDir.control as FormGroup).addControl(
+    if (this.parentGroupDir.control instanceof FormGroup) {
+      (this.parentGroupDir.control as FormGroup).addControl(
         this.control.controlKey,
         this.formControl
       );
+    } 
+
+    if (this.parentGroupDir.control instanceof FormArray) {
+      this.parentGroupDir.control.push(this.formControl);
+    }
   }
 
   ngOnDestroy(): void {
