@@ -16,7 +16,8 @@ export class DynamicControlResolver {
     input: () => import('../dynamic-controls/dynamic-input.component').then(c => c.DynamicInputComponent),
     select: () => import('../dynamic-controls/dynamic-select.component').then(c => c.DynamicSelectComponent),
     checkbox: () => import('../dynamic-controls/dynamic-checkbox.component').then(c => c.DynamicCheckboxComponent),
-    group: () => import('../dynamic-controls/dynamic-group.component').then(c => c.DynamicGroupComponent)
+    group: () => import('../dynamic-controls/dynamic-group.component').then(c => c.DynamicGroupComponent),
+    array: () => import('../dynamic-controls/dynamic-array.component').then(c => c.DynamicArrayComponent)
   }
 
   private loadedControlComponents = new Map<string, Type<any>>();

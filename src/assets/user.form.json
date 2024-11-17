@@ -71,6 +71,20 @@
         }
       }
     },
+    "phoneNumbers": {
+      "controlType": "array",
+      "label": "Phone Numbers",
+      "order": "4",
+      "controls": [
+        {
+          "controlType": "input",
+          "label": "Phone Number",
+          "value": null,
+          "type": "text",
+          "order": 0
+        }
+      ]
+    },
     "terms": {
       "controlType": "checkbox",
       "label": "Terms & Conditions were accepted",
