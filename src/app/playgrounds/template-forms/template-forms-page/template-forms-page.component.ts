@@ -8,6 +8,7 @@ import { UniqueNicknameDirective } from '../validators/unique-nickname.directive
 
 import { DynamicValidatorMessageDirective } from '../../../core/dynamic-validator-message.directive';
 import { ValidatorMessageContainerDirective } from '../../../core/validator-message-container.directive';
+import { AlertDirective } from '../directives/alert.directive.ts.directive';
 
 @Component({
   selector: 'app-template-forms-page',
@@ -19,7 +20,8 @@ import { ValidatorMessageContainerDirective } from '../../../core/validator-mess
     PasswordShouldMatchDirective,
     UniqueNicknameDirective,
     DynamicValidatorMessageDirective,
-    ValidatorMessageContainerDirective
+    ValidatorMessageContainerDirective,
+    AlertDirective
   ],
   templateUrl: './template-forms-page.component.html',
   styleUrls: [
@@ -30,6 +32,9 @@ import { ValidatorMessageContainerDirective } from '../../../core/validator-mess
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TemplateFormsPageComponent implements OnInit, AfterViewInit {
+
+  @ViewChild('lastName')
+  tpVar!: any;
 
   userInfo: UserInfo = {
     firstName: '',
@@ -68,6 +73,8 @@ export class TemplateFormsPageComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    console.log("Varaible value: ", this.tpVar);
+
     queueMicrotask(() => {
       this.inialFormValues = this.formDir.value;
     });

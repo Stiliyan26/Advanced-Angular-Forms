@@ -37,9 +37,10 @@
     <label for="last-name">Last Name</label>
     <input
       [(ngModel)]="userInfo.lastName"
+      appAlert
       required
       minlength="5"
-      #lastName="ngModel"
+      #lastName="Alert"
       name="last-name"
       type="text"
       id="last-name"
