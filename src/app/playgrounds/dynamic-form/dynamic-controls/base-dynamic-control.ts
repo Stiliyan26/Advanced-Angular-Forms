@@ -44,7 +44,7 @@ export class BaseDynamicControl implements OnInit, OnDestroy {
         this.control.controlKey,
         this.formControl
       );
-    } 
+    }
 
     if (this.parentGroupDir.control instanceof FormArray) {
       this.parentGroupDir.control.push(this.formControl);
@@ -52,9 +52,17 @@ export class BaseDynamicControl implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    (this.parentGroupDir.control as FormGroup).removeControl(
-      this.control.controlKey,
-    );
+    if (this.parentGroupDir.control instanceof FormGroup) {
+      (this.parentGroupDir.control as FormGroup).removeControl(
+        this.control.controlKey,
+      );
+    }
+
+    if (this.parentGroupDir.control instanceof FormArray) {
+      const index = this.parentGroupDir.control.controls.indexOf(this.formControl);
+      
+      this.parentGroupDir.control.removeAt(index);
+    }
   }
 
   private resolveValidators({ validators = {} }: DynamicControl) {
