@@ -11,8 +11,8 @@ import { DynamicControlResolver } from '../service/dynamic-control-resolver.serv
   selector: 'app-dynamic-array',
   standalone: true,
   imports: [
-    CommonModule, 
-    ReactiveFormsModule, 
+    CommonModule,
+    ReactiveFormsModule,
     ControlInjectorPipe
   ],
   viewProviders: [
@@ -28,6 +28,13 @@ import { DynamicControlResolver } from '../service/dynamic-control-resolver.serv
           [ngComponentOutletInjector]="i | controlInjector:control">
         </ng-container>
       </ng-container>
+
+      <button 
+        *ngIf="control.config.interactive" 
+        type="button" 
+        (click)="addControl()">
+        {{ control.config.interactive.buttonText || "Add Item"}}
+      </button>
     </fieldset>
   `,
   styles: ``
@@ -38,10 +45,20 @@ export class DynamicArrayComponent extends BaseDynamicControl {
   override hostClass = 'form-field-array';
 
   controlResolver = inject(DynamicControlResolver);
-  
+
   override formControl = new FormArray([]);
-  
+
   protected get controls() {
     return this.control.config.controls as DynamicControl[];
+  }
+
+  protected get interactive() {
+    return this.control.config.interactive;
+  }
+
+  addControl() {
+    if (this.interactive?.controlTemplate) {
+      this.controls.push(this.interactive?.controlTemplate);
+    }
   }
 }

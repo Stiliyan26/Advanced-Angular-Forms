@@ -10,7 +10,10 @@
       "validators": {
         "required": true,
         "minLength": 2,
-        "banWords": ["Test", "Dummy"]
+        "banWords": [
+          "Test",
+          "Dummy"
+        ]
       }
     },
     "email": {
@@ -75,13 +78,20 @@
       "controlType": "array",
       "label": "Phone Numbers",
       "order": "4",
+      "interactive": {
+        "buttonText": "Add new Phone Number",
+        "controlTemplate": {
+          "controlType": "input",
+          "label": "New Number",
+          "value": null
+        }
+      },
       "controls": [
         {
           "controlType": "input",
           "label": "Phone Number",
           "value": null,
-          "type": "text",
-          "order": 0
+          "type": "text"
         }
       ]
     },

@@ -10,7 +10,7 @@ import { DynamicValidatorMessageDirective } from "../../../core/dynamic-validato
 export const comparatorFn = (
   a: KeyValue<string, DynamicControl>,
   b: KeyValue<string, DynamicControl>
-): number => a.value.order - b.value.order;
+): number => (a.value.order ?? 0) - (b.value.order ?? 0);
 
 export const dynamicControlProvider: StaticProvider = {
   provide: ControlContainer,

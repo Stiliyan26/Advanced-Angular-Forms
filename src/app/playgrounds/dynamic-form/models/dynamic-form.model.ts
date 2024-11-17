@@ -12,8 +12,12 @@ export interface DynamicControl<T = string> {
   controlType: 'input' | 'select' | 'checkbox' | 'group' | 'array';
   type?: string;
   label: string;
-  order: number;
+  order?: number;
   value: T | null;
+  interactive?: {
+    buttonText: string;
+    controlTemplate: DynamicControl;
+  }
   options?: DynamicOptions[];
   controls?: DynamicFormConfig['controls'] | DynamicControl[];
   validators?: {
