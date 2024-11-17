@@ -13,6 +13,7 @@
     <h3 class="form-heading">{{formConfig.config.description}}</h3>
 
     <ng-container *ngFor="let control of formConfig.config.controls | keyvalue: comparatorFn">
+      <!-- Check: in angular 16 you can pass input parameters to ngComponentOutlet and remove the injector -->
       <ng-container
         [ngComponentOutlet]="controlResolver.resolve(control.value.controlType) | async"
         [ngComponentOutletInjector]="control.key | controlInjector:control.value">

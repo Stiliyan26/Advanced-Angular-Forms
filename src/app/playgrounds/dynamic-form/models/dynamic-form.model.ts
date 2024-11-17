@@ -1,4 +1,4 @@
-import { ValidatorFn, Validators } from "@angular/forms";
+import { AbstractControl, ValidatorFn, Validators } from "@angular/forms";
 
 export interface DynamicOptions {
   label: string;
@@ -17,7 +17,8 @@ export interface DynamicControl<T = string> {
   interactive?: {
     buttonText: string;
     controlTemplate: DynamicControl;
-  }
+  };
+  controlInstance?: AbstractControl<T>
   options?: DynamicOptions[];
   controls?: DynamicFormConfig['controls'] | DynamicControl[];
   validators?: {

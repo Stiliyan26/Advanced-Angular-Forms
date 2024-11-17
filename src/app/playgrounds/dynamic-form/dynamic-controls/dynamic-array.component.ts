@@ -21,9 +21,9 @@ import { DynamicControlResolver } from '../service/dynamic-control-resolver.serv
   template: `
      <fieldset [formArrayName]="control.controlKey">
       <legend>{{control.config.label}}</legend>
-
+      <!-- Check: in angular 16 you can pass input parameters to ngComponentOutlet and remove the injector -->
       <div class="array-item" *ngFor="let control of controls; let i = index">
-        <ng-container
+        <ng-container 
           [ngComponentOutlet]="controlResolver.resolve(control.controlType) | async"
           [ngComponentOutletInjector]="i | controlInjector:control">
         </ng-container>
@@ -70,7 +70,10 @@ export class DynamicArrayComponent extends BaseDynamicControl {
 
   addControl() {
     if (this.interactive?.controlTemplate) {
-      this.controls.push(this.interactive?.controlTemplate);
+      this.controls.push({
+        ...structuredClone(this.interactive.controlTemplate),
+        controlInstance: undefined
+      })
     }
   }
 

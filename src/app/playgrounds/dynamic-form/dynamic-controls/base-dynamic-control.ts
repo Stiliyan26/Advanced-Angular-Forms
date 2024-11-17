@@ -31,14 +31,17 @@ export class BaseDynamicControl implements OnInit, OnDestroy {
 
   control = inject(CONTROL_DATA);
 
-  formControl: AbstractControl = new FormControl(
-    this.control.config.value,
-    this.resolveValidators(this.control.config)
-  );
+  formControl: AbstractControl = this.control.config.controlInstance ||
+    new FormControl(
+      this.control.config.value,
+      this.resolveValidators(this.control.config)
+    );
 
   private parentGroupDir = inject(ControlContainer);
 
   ngOnInit(): void {
+    this.control.config.controlInstance = this.formControl;
+
     if (this.parentGroupDir.control instanceof FormGroup) {
       (this.parentGroupDir.control as FormGroup).addControl(
         this.control.controlKey,
@@ -60,7 +63,7 @@ export class BaseDynamicControl implements OnInit, OnDestroy {
 
     if (this.parentGroupDir.control instanceof FormArray) {
       const index = this.parentGroupDir.control.controls.indexOf(this.formControl);
-      
+
       this.parentGroupDir.control.removeAt(index);
     }
   }
