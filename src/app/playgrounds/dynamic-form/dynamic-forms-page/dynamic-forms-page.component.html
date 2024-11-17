@@ -9,7 +9,7 @@
 </div>
 
 <div *ngIf="formConfig$ | async as formConfig" class="dynamic-form-container">
-  <form [formGroup]="formConfig.form" (ngSubmit)="onSubmit(formConfig.form)">
+  <form #formDir="ngForm" [formGroup]="formConfig.form" (ngSubmit)="onSubmit(formConfig.form, formDir)">
     <h3 class="form-heading">{{formConfig.config.description}}</h3>
 
     <ng-container
@@ -22,7 +22,9 @@
       </ng-container>
     </ng-container>
 
-    <!-- <button [disabled]="formConfig.form.invalid">Save</button> -->
-    <button>Save</button>
+    <button [disabled]="formConfig.form.invalid || formConfig.form.pristine">
+      Save
+    </button>
+    <!-- <button>Save</button> -->
   </form>
 </div>

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { map, Observable, Subject, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 
 import { DynamicControlResolver } from '../service/dynamic-control-resolver.service';
 import { ControlInjectorPipe } from '../pipe/control-injector.pipe';
@@ -56,9 +56,8 @@ export class DynamicFormsPageComponent implements OnInit {
     );
   }
 
-  protected onSubmit(form: FormGroup) {
+  protected onSubmit(form: FormGroup, formDir: FormGroupDirective) {
     console.log('Submitted data: ', form.value);
-
-    form.reset();
+    formDir.resetForm(form.value);
   }
 }

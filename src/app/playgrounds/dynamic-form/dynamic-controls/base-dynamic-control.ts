@@ -1,5 +1,5 @@
 import { Directive, HostBinding, inject, OnDestroy, OnInit, StaticProvider } from "@angular/core";
-import { AbstractControl, ControlContainer, FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { AbstractControl, ControlContainer, FormArray, FormControl, FormGroup, FormGroupDirective, NgForm, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CONTROL_DATA } from "../control-data.token";
 import { CommonModule, KeyValue } from "@angular/common";
 import { DynamicControl } from "../models/dynamic-form.model";
@@ -39,6 +39,10 @@ export class BaseDynamicControl implements OnInit, OnDestroy {
 
   private parentGroupDir = inject(ControlContainer);
 
+  private get formDirective() {
+    return this.parentGroupDir.formDirective as FormGroupDirective | NgForm; //NgForm if template driven
+  }
+
   ngOnInit(): void {
     this.control.config.controlInstance = this.formControl;
 
@@ -55,6 +59,11 @@ export class BaseDynamicControl implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.formDirective.submitted) {
+      this.control.config.value = this.formControl.value;
+      this.control.config.controlInstance = undefined;
+    }
+
     if (this.parentGroupDir.control instanceof FormGroup) {
       (this.parentGroupDir.control as FormGroup).removeControl(
         this.control.controlKey,
