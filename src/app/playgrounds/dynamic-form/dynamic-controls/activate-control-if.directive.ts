@@ -9,12 +9,14 @@ import { takeUntil } from 'rxjs/operators';
   standalone: true
 })
 export class ActivateControlIfDirective implements OnInit, OnDestroy {
+
   @Input('activateControlIf')
   config?: DynamicControl['activationConfig'];
 
   private vcr = inject(ViewContainerRef);
   private templateRef = inject(TemplateRef);
   private formGroupDir = inject(FormGroupDirective);
+
   private destroy$ = new Subject<void>();
 
   ngOnInit() {
@@ -30,11 +32,8 @@ export class ActivateControlIfDirective implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         const form = this.formGroupDir.form;
-        
         // Support for nested paths
-        const value = controlPath.includes('.') 
-          ? form.get(controlPath)?.value
-          : form.value[controlPath];
+        const value = form.get(controlPath)?.value;
 
         console.log('Initial form value:', {
           path: controlPath,
@@ -49,6 +48,7 @@ export class ActivateControlIfDirective implements OnInit, OnDestroy {
         if (controlPath.includes('.')) {
           // For nested paths, subscribe to specific control
           const control = form.get(controlPath);
+
           if (control) {
             control.valueChanges
               .pipe(takeUntil(this.destroy$))
