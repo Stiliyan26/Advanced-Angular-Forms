@@ -1,4 +1,4 @@
-import { Directive, HostBinding, inject, OnInit, StaticProvider } from "@angular/core";
+import { Directive, HostBinding, inject, OnDestroy, OnInit, StaticProvider } from "@angular/core";
 import { AbstractControl, ControlContainer, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CONTROL_DATA } from "../control-data.token";
 import { CommonModule, KeyValue } from "@angular/common";
@@ -24,7 +24,8 @@ export const sharedDynamicControlDeps = [
 ];
 
 @Directive()
-export class BaseDynamicControl implements OnInit {
+export class BaseDynamicControl implements OnInit, OnDestroy {
+  
 
   @HostBinding('class')
   hostClass = 'form-field';
@@ -43,6 +44,12 @@ export class BaseDynamicControl implements OnInit {
         this.control.controlKey,
         this.formControl
       );
+  }
+
+  ngOnDestroy(): void {
+    (this.parentGroupDir.control as FormGroup).removeControl(
+      this.control.controlKey,
+    );
   }
 
   private resolveValidators({ validators = {} }: DynamicControl) {
